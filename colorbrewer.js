@@ -1,10 +1,12 @@
-var schemeNames = {sequential: ["BuGn","BuPu","GnBu","OrRd","PuBu","PuBuGn","PuRd","RdPu","YlGn","YlGnBu","YlOrBr","YlOrRd"],
-					singlehue:["Blues","Greens","Greys","Oranges","Purples","Reds"],
-					diverging: ["BrBG","PiYG","PRGn","PuOr","RdBu","RdGy","RdYlBu","RdYlGn","Spectral"],
-					qualitative: ["Accent","Dark2","Paired","Pastel1","Pastel2","Set1","Set2","Set3"] };
+var schemeNames = {
+	sequential: ["Batlow", "BatlowW", "BatlowK", "Glasgow", "Lipari", "Navia", "Hawaii", "Buda", "Imola", "Oslo", "GrayC", "Nuuk", "Devon", "Lajolla", "Bamako", "Davos", "Bilbao", "Lapaz", "Acton", "Turku", "Tokyo"],
+	diverging: ["Broc", "Cork", "Vik", "Lisbon", "Tofino", "Berlin", "Bam", "Roma", "Vanimo", "Managua"],
+	"multi-sequential": ["Oleron", "Bukavu", "Fes"],
+	cyclic: ["RomaO", "BamO", "BrocO", "CorkO", "VikO"]
+};
 
 var visibleMap,
-	selectedScheme = "BuGn",
+	selectedScheme = schemeNames.sequential[0],
 	numClasses = 3;
 
 $("#num-classes").change(function(){
@@ -91,28 +93,10 @@ function setNumClasses(n)
 var selectedSchemeType;
 function setSchemeType(type)
 {
+	if ( type === "cyclical" ) type = "cyclic";
+	if ( !schemeNames[type] ) type = "sequential";
 	selectedSchemeType = type;
-
 	$( "#num-classes option" ).removeAttr( "disabled" );
-	switch( selectedSchemeType )
-	{
-		case "sequential":
-			if( $( "#num-classes" ).val() >= 10 )
-			{
-				$( "#num-classes" ).val( 9 );
-				numClasses = 9;
-			}
-			$( "#num-classes option[name=10], #num-classes option[name=11], #num-classes option[name=12]" ).attr( "disabled", "disabled" );
-			break;
-		case "diverging":
-			if( $( "#num-classes" ).val() >= 12 )
-			{
-				$( "#num-classes" ).val( 11 );
-				numClasses = 11;
-			}
-			$( "#num-classes option[name=12]" ).attr( "disabled", "disabled" );
-			break;
-	}
 	showSchemes();
 }
 
@@ -132,7 +116,7 @@ function showSchemes()
 			setScheme( $(this).attr("class").substr(5) );
 		}));
 	}
-	if ( selectedSchemeType == "sequential" ){
+	if ( selectedSchemeType == "sequential" && schemeNames.singlehue.length ){
 		$("#scheme1").css("width","160px");
 		$("#multi").show().text("Multi-hue:");
 		$("#scheme2").css("width","90px");
@@ -159,7 +143,6 @@ function showSchemes()
 		$("#single").hide();
 	}
 
-	$(".score-icon").show();
 	$("#color-system").show();
 	if ( $(".ramp."+selectedScheme)[0] ){
 		setScheme( selectedScheme );
@@ -174,9 +157,8 @@ function clearSchemes()
 	$("#color-values").empty();
 	$("#ramps").css("width","100%");
 	$("#scheme-name").html("");
-	$(".score-icon").hide();
 	$("#color-system").hide();
-	$("#ramps").append("<p>No color schemes match these criteria.</p><p>Please choose fewer data classes, a different data type, and/or fewer filtering options.</p>");
+	$("#ramps").append("<p>No color schemes available for this selection.</p><p>Please choose fewer data classes or a different gradient type.</p>");
 }
 
 function setScheme(s)
@@ -188,7 +170,8 @@ function setScheme(s)
 	$("#scheme-name").html(numClasses+"-class "+selectedScheme);
 	applyColors();
 	drawColorChips();
-	$("#permalink").val("https://colorbrewer2.org/?type="+selectedSchemeType+"&scheme="+selectedScheme+"&n="+numClasses);
+	var baseUrl = window.location.href.split("#")[0].split("?")[0];
+	$("#permalink").val(baseUrl+"?type="+selectedSchemeType+"&scheme="+selectedScheme+"&n="+numClasses);
 	window.location.hash = "type="+selectedSchemeType+"&scheme="+selectedScheme+"&n="+numClasses;
 
 	updateValues();
@@ -199,61 +182,13 @@ function setScheme(s)
 		if ( i < numClasses - 1 ) cssString += " ";
 	}
 	$("#copy-css input").val(cssString);
-
-	$(".score-icon").attr("class","score-icon");
-	var f = checkColorblind(s);
-	$("#blind-icon").addClass( !f ? "bad" : (f == 1 ? "ok" : "maybe") ).attr("title",numClasses+"-class "+selectedScheme + " is " + getWord(f)+"color blind friendly");
-	f = checkCopy(s);
-	$("#copy-icon").addClass( !f ? "bad" : (f == 1 ? "ok" : "maybe") ).attr("title",numClasses+"-class "+selectedScheme + " is " + getWord(f)+"photocopy friendly");
-	f = checkScreen(s);
-	$("#screen-icon").addClass( !f ? "bad" : (f == 1 ? "ok" : "maybe") ).attr("title",numClasses+"-class "+selectedScheme + " is " + getWord(f)+"LCD friendly");
-	f = checkPrint(s);
-	$("#print-icon").addClass( !f ? "bad" : (f == 1 ? "ok" : "maybe") ).attr("title",numClasses+"-class "+selectedScheme + " is " + getWord(f)+"print friendly");
-
-	function getWord(w){
-		if ( !w ) return "not ";
-		if ( w == 1 ) return "";
-		if ( w == 2 ) return "possibly not ";
-	}
 }
 
-/* function getJSON()
-{
-	var jsonString = "[";
-	for ( var i = 0; i < numClasses; i ++ ){
-		jsonString += "'" + colorbrewer[selectedScheme][numClasses][i] + "'";
-		if ( i < numClasses - 1 ) jsonString += ",";
-	}
-	jsonString += "]";
-
-	return jsonString;
-} */
-
-function checkFilters(scheme,f)
+function checkFilters(scheme)
 {
 	if ( !colorbrewer[scheme][numClasses] ) return false;
-	if ( $("#blindcheck").is(":checked") && checkColorblind(scheme) != 1 ) return false;
-	if ( $("#printcheck").is(":checked") && checkPrint(scheme) != 1 ) return false;
-	if ( $("#copycheck").is(":checked") && checkCopy(scheme) != 1) return false;
 	return true;
 }
-function checkColorblind(scheme)
-{
-	return colorbrewer[scheme].properties.blind.length > 1 ? colorbrewer[scheme].properties.blind[numClasses-3] : colorbrewer[scheme].properties.blind[0];
-}
-function checkPrint(scheme)
-{
-	return colorbrewer[scheme].properties.print.length > 1 ? colorbrewer[scheme].properties.print[numClasses-3] : colorbrewer[scheme].properties.print[0];
-}
-function checkCopy(scheme)
-{
-	return colorbrewer[scheme].properties.copy.length > 1 ? colorbrewer[scheme].properties.copy[numClasses-3] : colorbrewer[scheme].properties.copy[0];
-}
-function checkScreen(scheme)
-{
-	return colorbrewer[scheme].properties.screen.length > 1 ? colorbrewer[scheme].properties.screen[numClasses-3] : colorbrewer[scheme].properties.screen[0];
-}
-
 function applyColors()
 {
 	if ( !colorbrewer[selectedScheme][numClasses] ){
@@ -298,8 +233,6 @@ function updateValues()
 	str = str.replace( /\n$/, "" );
 
 	$("#color-values").append("<textarea readonly style='line-height:"+Math.min(24,parseInt(265/numClasses))+"px; height:"+Math.min(24,parseInt(265/numClasses))*numClasses+"px'>"+str+"</textarea>");
-	$( "#ase" ).attr( "href", "export/ase/" + selectedScheme + "_" + numClasses + ".ase" );
-	$( "#gpl" ).attr( "href", "export/gpl/" + selectedScheme + "_" + numClasses + ".gpl" );
 	$("#copy-json input").val(jsonString);
 }
 
@@ -321,7 +254,8 @@ function getColorDisplay(c,s)
 
 }
 function getCMYK( scheme, classes, n ){
-	return cmyk[scheme][classes][n].toString();
+	var rgb = hexToRgb(getColorDisplay(colorbrewer[scheme][classes][n], "hex"));
+	return rgb2cmyk(rgb.r, rgb.g, rgb.b).toString();
 }
 var highlight;
 $("#counties").svg({
@@ -355,7 +289,7 @@ $("#counties").svg({
 function init()
 {
 	var type = getParameterByName("type") || "sequential";
-	var scheme = getParameterByName("scheme") || "BuGn";
+	var scheme = getParameterByName("scheme") || schemeNames.sequential[0];
 	var n = getParameterByName("n") || 3;
 	$("#"+type).prop("checked",true);
 	$("#num-classes").val(n);
@@ -422,13 +356,8 @@ $(".learn-more, #how, #credits, #downloads").click(function(e){
 		break;
 
 		case "schemes-learn-more":
-		$("#learnmore-title").html("TYPES OF COLOR SCHEMES");
+		$("#learnmore-title").html("GRADIENT TYPES");
 		page = "schemes.html";
-		break;
-
-		case "filters-learn-more":
-		$("#learnmore-title").html("USABILITY ICONS");
-		page = "usability.html";
 		break;
 
 		case "how":
@@ -465,7 +394,7 @@ $("#learnmore #close, #mask").click(function(){
 
 $( "#export #tab" ).toggle(
 	function(){
-		$( "#export" ).animate( { "left" : "265px" } );
+		$( "#export" ).animate( { "left" : "287px" } );
 	},
 	function(){
 		$( "#export" ).animate( { "left" : "0px" } );

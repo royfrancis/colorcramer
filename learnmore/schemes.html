@@ -1,21 +1,20 @@
 <html>
 <body>
-<div style="margin-bottom:10px;margin-top:-5px;">
-<p style="display:inline-block;width:65%;vertical-align:top;"><strong>1. Sequential schemes</strong> are suited to ordered data that progress from low to high. Lightness steps dominate the look of these schemes, with light colors for low data values to dark colors for high data values.</p>
-<img src="learnmore/sequential.png" alt="sequential" style="margin-left:20px"/>
+<div style="margin-bottom:12px;margin-top:-5px;">
+<p><strong>Sequential Gradients</strong></p>
+<p>Sets of colors ordered to a monotonic gradient that preserves a given order from one end to the other (often arranged by lightness values). The simplest example is a greyscale, varying from white to black. Other simple examples are gradients of a single hue, ranging from a tint (light hue) to a shade (dark hue). Multihue gradients such as Batlow tend to be stronger gradients with higher local color contrast. Sequential gradients are optimal for displaying sequential datasets (e.g., low to high values), such as temperature factors across a protein structure.</p>
 </div>
-<div style="margin-bottom:10px">
-<p style="display:inline-block;width:65%;vertical-align:top;"><strong>2. Diverging schemes</strong> put equal emphasis on mid-range critical values and extremes at both ends of the data range. The critical class or break in the middle of the legend is emphasized with light colors and low and high extremes are emphasized with dark colors that have contrasting hues.<br/><a href="learnmore/schemes_full.html#diverging" target="_blank" style="color:#669">Learn more »</a></p>
-<img src="learnmore/diverging.png" alt="diverging" style="margin-left:20px"/>
+<div style="margin-bottom:12px;">
+<p><strong>Diverging Gradients</strong></p>
+<p>Formed by a set of colors that diverge from (or converge to) a central color in the middle of the gradient. Optimal for representing diverging datasets with a clearly defined central value, such as gene expression values that can be positive or negative with zero as the central value. Note: diverging gradients are often misused for sequential datasets — this should be avoided, as it introduces a misleading artificial focal point at the central value.</p>
 </div>
-<div style="margin-bottom:10px">
-<p style="display:inline-block;width:65%;vertical-align:top;"><strong>3. Qualitative schemes</strong> do not imply magnitude differences between legend classes, and hues are used to create the primary visual differences between classes. Qualitative schemes are best suited to representing nominal or categorical data.<br/><a href="learnmore/schemes_full.html#qualitative" target="_blank" style="color:#669">Learn more »</a></p>
-<img src="learnmore/qualitative.png" alt="qualitative" style="margin-left:20px"/>
+<div style="margin-bottom:12px;">
+<p><strong>Multisequential Gradients</strong></p>
+<p>While diverging gradients have colors on both sides diverging from a central value (light-dark next to dark-light), multisequential gradients have both sides featuring the same gradient direction (light-dark next to light-dark). Like diverging gradients, they must only be used if there is a meaningful central value in the dataset. They are widely used in geosciences to represent earth surface topography, where one side represents bathymetry (below sea level) and the other side topography above sea level.</p>
 </div>
-<div class="further-reading">
-	<h4>Further reading</h4>
-	<p><a href="http://www.personal.psu.edu/faculty/c/a/cab38/ColorSch/SchHome.html" target="_blank">Brewer, Cynthia A. 1994. Color use guidelines for mapping and visualization. Chapter 7 (pp. 123-147) in Visualization in Modern Cartography</a></p>
-<p><a href="http://www.personal.psu.edu/faculty/c/a/cab38/Brewer_pubs.html" target="_blank">Other cartography publications by Cynthia Brewer</a></p>
+<div style="margin-bottom:12px;">
+<p><strong>Cyclic Gradients</strong></p>
+<p>Smooth throughout, with matching ends — cyclic gradients have no real beginning or end. They are used for datasets with angles or periodic quantities, such as the horizontal direction of rivers on a map, where 0° should match 360° visually.</p>
 </div>
 </body>
 </html>

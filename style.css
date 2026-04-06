@@ -9,8 +9,8 @@ html,body{
 a img{ border: none }
 
 #wrapper, #footer {
-	width: 1024px;
-	margin: 10px auto 0 auto;
+	width: 1046px;
+	margin: 0px auto 0 auto;
 	overflow: hidden;
 }
 
@@ -26,7 +26,7 @@ a img{ border: none }
 }
 #footer img.logo{ float: right }
 
-#footer img.gh{ width: 16px; height: 16px; margin-right: 5px; vertical-align: middle;}
+#footer img.gh{ width: 12px; height: 12px; margin-right: 5px; vertical-align: middle;}
 
 #header{
 	float: left;
@@ -73,7 +73,7 @@ a img{ border: none }
 }
 
 #left {
-	width: 264px;
+	width: 286px;
 	height: 650px;
 	float: left;
 	border-left: 1px solid #999;
@@ -106,50 +106,15 @@ a img{ border: none }
 	display: inline-block;
 }
 
-.score-icon{
-	display: inline-block;
-	width: 27px;
-	height: 27px;
-}
-
-#blind-icon.ok { background-image: url(images/colorblind.png); }
-#blind-icon.bad { background-image: url(images/colorblind_avoid.png); }
-#blind-icon.maybe { background-image: url(images/colorblind_maybe.png); }
-#print-icon.ok { background-image: url(images/colorprint.png); }
-#print-icon.bad { background-image: url(images/colorprint_avoid.png); }
-#print-icon.maybe { background-image: url(images/colorprint_maybe.png); }
-#screen-icon.ok { background-image: url(images/laptop.png); }
-#screen-icon.bad { background-image: url(images/laptop_avoid.png); }
-#screen-icon.maybe { background-image: url(images/laptop_maybe.png); }
-#copy-icon.ok { background-image: url(images/photocopy.png); }
-#copy-icon.bad { background-image: url(images/photocopy_avoid.png); }
-#copy-icon.maybe { background-image: url(images/photocopy_maybe.png); }
-
 #ramps, #singlehue {
 	padding: 0 5px;
 	display: inline-block;
 }
 
-#singlehue { display: none; max-width: 78px; }
-
 #scheme1 {
 	float: left;
 	margin-right: 5px;
 	overflow: hidden;
-}
-
-#multi {
-	margin-left: 5px;
-}
-
-#scheme2 {
-	float: left;
-	padding-left: 7px;
-	border-left: 1px solid #999;
-}
-
-#single {
-	margin-left: 10px;
 }
 
 #ramps p, #singlehue p{
@@ -191,7 +156,7 @@ a img{ border: none }
 	position: absolute;
 	top: 295px;
 	left: 145px;
-	width: 122px;
+	width: 144px;
 	height: 357px;
 	padding-left: 5px;
 	float: right;
@@ -310,14 +275,23 @@ a img{ border: none }
 	padding: 5px 0 5px 15px;
 	font-weight: bold;
 }
+#learnmore-title {
+	position: relative;
+	padding-right: 35px;
+}
 #learnmore #content {
 	margin: 15px;
 	font-size: 12px;
 	line-height: 15px;
 }
 #learnmore #close{
-	float: right;
-	margin-right: 15px;
+	position: absolute;
+	top: 5px;
+	right: 12px;
+	z-index: 1;
+	padding: 0;
+	background-color: transparent;
+	line-height: 1;
 	cursor: pointer;
 }
 #learnmore #close:hover{
@@ -348,7 +322,7 @@ a img{ border: none }
 	left: 0;
 	top: 295px;
 	height: 354px;
-	width: 265px;
+	width: 287px;
 	background-color: white;
 	border: 1px solid #999;
 	border-left: none;
@@ -438,9 +412,6 @@ a img{ border: none }
 	float: left;
 	margin-top: 25px;
 }
-#adobe{
-	float: left;
-}
 #export .copy input{
 	margin-top: 5px;
 }
@@ -448,46 +419,12 @@ a img{ border: none }
 #copy-css{ float: left; }
 #export #copy-json p{ margin-bottom: 0; }
 #export #copy-css p{ margin-bottom: 0; }
-#master-data{
-	width: 530px;
-	height: 210px;
-}
-#master-data h2{
-	position: absolute;
-	top: 145px;
-	left: 5px;
-	width: 520px;
-	margin-bottom: 2px;
-	background-color: rgb(68, 68, 68);
-	color: white;
-	text-indent: 5px;
-	font-size: 13px;
-	float: right;
-}
-#master-data h3{
-	/*color: orange;*/
-	font-size: 13px;
-	margin-bottom: 0;
-	text-indent: 10px;
-	margin-top: 10px;
-}
-#excel{
-	width: 250px;
-	height: 90px;
-}
 #css{
 	width: 250px;
 	height: 90px;
 }
 #download #css a{
 	margin-bottom: 5px;
-}
-#arc{
-	width: 250px;
-	margin-bottom: 30px;
-}
-#json, #js, #css, #carto{
-	width: 250px;
 }
 .left {
 	float: left;
@@ -499,7 +436,7 @@ a img{ border: none }
 a{ text-decoration: none; }
 a:hover{ text-decoration: underline; }
 #overlays{ pointer-events: none; }
-#map-container{ margin-left: 264px; position: relative; width: 756px; height: 581px; border: 1px solid #999; overflow: hidden; background-image: url(images/ajax-loader.gif); background-position:center; background-repeat:no-repeat;}
+#map-container{ margin-left: 286px; position: relative; width: 756px; height: 581px; border: 1px solid #999; overflow: hidden; background-image: url(images/ajax-loader.gif); background-position:center; background-repeat:no-repeat;}
 .svg-container { position: absolute; width: 100%; height: 100%; overflow: hidden; }
 #terrain-img{ position: absolute; }
 #road-lines{ fill: none; stroke: #f33; stroke-width: 1.5px; }
