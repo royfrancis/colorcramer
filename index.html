@@ -15,6 +15,15 @@
 		<script type="text/javascript" src="lib/spectrum.min.js"></script>
 	</head>
 	<body>
+		<!-- colour-matrix filters (Machado et al. 2009, full severity) used by the "Emulate vision deficiencies" option -->
+		<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+			<defs>
+				<filter id="cvd-protanopia" color-interpolation-filters="linearRGB"><feColorMatrix type="matrix" values="0.152286 1.052583 -0.204868 0 0 0.114503 0.786281 0.099216 0 0 -0.003882 -0.048116 1.051998 0 0 0 0 0 1 0"/></filter>
+				<filter id="cvd-deuteranopia" color-interpolation-filters="linearRGB"><feColorMatrix type="matrix" values="0.367322 0.860646 -0.227968 0 0 0.280085 0.672501 0.047413 0 0 -0.01182 0.04294 0.968881 0 0 0 0 0 1 0"/></filter>
+				<filter id="cvd-tritanopia" color-interpolation-filters="linearRGB"><feColorMatrix type="matrix" values="1.255528 -0.076749 -0.178779 0 0 -0.078411 0.930809 0.147602 0 0 0.004733 0.691367 0.3039 0 0 0 0 0 1 0"/></filter>
+				<filter id="cvd-achromatopsia" color-interpolation-filters="linearRGB"><feColorMatrix type="matrix" values="0.2126 0.7152 0.0722 0 0 0.2126 0.7152 0.0722 0 0 0.2126 0.7152 0.0722 0 0 0 0 0 1 0"/></filter>
+			</defs>
+		</svg>
 		<div id="wrapper">
 			<div id="left">
 				<div id="number" class="section">
@@ -58,6 +67,21 @@
 								<p>color transparency</p>
 							</div>
 						</div> <!--end background div-->
+						
+						<p>Emulate vision deficiencies:</p>
+						<div id="vision">
+							<select id="vision-select" title="Approximate simulation of how the map looks with this condition">
+								<option value="">Normal vision</option>
+								<option value="protanopia">Protanopia</option>
+								<option value="deuteranopia">Deuteranopia</option>
+								<option value="tritanopia">Tritanopia</option>
+								<option value="achromatopsia">Achromatopsia</option>
+							</select>
+						</div> <!--end vision div-->
+						
+						<div id="reverse">
+							<input type="checkbox" id="reverse-check" /><label for="reverse-check">Reverse palette</label>
+						</div>
 					</div> <!--end options div-->
 					
 					<div id="system">
@@ -92,17 +116,17 @@
 					<div id="perma">
 						<h3>Permalink</h3>
 						<p>Share a direct link to this color scheme.</p>
-						<input type="text" id="permalink" value="" readonly />
+						<input type="text" id="permalink" value="" readonly /><button type="button" class="copy-btn" title="Copy permalink">copy</button>
 					</div> <!--end perma div-->
 					<div class="copy" id="copy-json">
 						<h3>JSON</h3>
 							<p>Copy this scheme as a JSON array.</p>
-							<input type="text" value="" readonly />
+							<input type="text" value="" readonly /><button type="button" class="copy-btn" title="Copy JSON">copy</button>
 					</div>
 					<div class="copy" id="copy-css">
 						<h3>CSS</h3>
 						<p>Copy CSS classes for this scheme.</p>
-						<input type="text" value="" readonly />
+						<input type="text" value="" readonly /><button type="button" class="copy-btn" title="Copy CSS">copy</button>
 					</div>
 				</div> <!--end selected-data div-->
 				

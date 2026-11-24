@@ -13,6 +13,18 @@ var selectedScheme = schemeNames.sequential[0],
 	selectedSchemeType = "sequential",
 	numClasses = 6;
 
+// palette colors as shown and exported; the "Reverse palette" checkbox flips the order
+var reversed = false;
+function paletteColors(scheme, n)
+{
+	var c = colorbrewer[scheme][n];
+	return reversed ? c.slice().reverse() : c;
+}
+function paletteColor(scheme, n, i)
+{
+	return paletteColors(scheme, n)[i];
+}
+
 function clampClasses(n)
 {
 	n = parseInt(n, 10);
@@ -28,6 +40,38 @@ $(".scheme-type").change(function(){
 });
 $("#color-system").change(updateValues);
 $("#layers input").change(layerChange);
+
+$("#reverse-check").change(function(){
+	reversed = $(this).is(":checked");
+	showSchemes();
+});
+
+// copy buttons in the share panel: copy the value of the input in front of the button
+$(".copy-btn").click(function(){
+	var btn = $(this), input = btn.prev("input")[0];
+	function done(ok)
+	{
+		btn.text( ok ? "copied" : "failed" );
+		setTimeout(function(){ btn.text("copy"); }, 1200);
+	}
+	function fallback()
+	{
+		var ok = false;
+		input.focus();
+		input.select();
+		try { ok = document.execCommand("copy"); } catch(e) {}
+		done(ok);
+	}
+	if ( navigator.clipboard && window.isSecureContext ) navigator.clipboard.writeText(input.value).then(function(){ done(true); }, fallback);
+	else fallback();
+});
+
+// emulate a color vision deficiency: a cvd-* class on the wrapper switches on the matching filter (see style.css)
+$("#vision-select").change(function(){
+	var v = $(this).val();
+	$("#wrapper").removeClass("cvd-protanopia cvd-deuteranopia cvd-tritanopia cvd-achromatopsia");
+	if ( v ) $("#wrapper").addClass("cvd-"+v);
+});
 
 // terrain starts at a default transparency; remember it so switching back to a solid background can undo it
 var TERRAIN_DEFAULT_TRANSPARENCY = 50, transparencyAuto = false;
@@ -140,7 +184,7 @@ function showSchemes()
 			ramp = $("<div class='ramp'></div>").attr("data-scheme", name).attr("title", name),
 			svg = "<svg width='15' height='75'>";
 		for ( var n = 0; n < 5; n++ ){
-			svg += "<rect fill='"+colorbrewer[name][5][n]+"' width='15' height='15' y='"+n*15+"'/>";
+			svg += "<rect fill='"+paletteColor(name,5,n)+"' width='15' height='15' y='"+n*15+"'/>";
 		}
 		svg += "</svg>";
 		$("#ramps").append(ramp.append(svg).click( function(){
@@ -192,13 +236,13 @@ function setScheme(s)
 	applyColors();
 	drawColorChips();
 	var baseUrl = window.location.href.split("#")[0].split("?")[0];
-	var shareUrl = baseUrl+"?type="+selectedSchemeType+"&scheme="+selectedScheme+"&n="+numClasses;
+	var shareUrl = baseUrl+"?type="+selectedSchemeType+"&scheme="+selectedScheme+"&n="+numClasses+( reversed ? "&reverse=1" : "" );
 	$("#permalink").val(shareUrl);
 	if ( window.history && window.history.replaceState ) window.history.replaceState(null, document.title, shareUrl);
 
 	var cssString = "";
 	for ( var i = 0; i < numClasses; i ++ ){
-		cssString += "."+selectedScheme+" .q"+i+"-"+numClasses+"{fill:" + colorbrewer[selectedScheme][numClasses][i] + "}";
+		cssString += "."+selectedScheme+" .q"+i+"-"+numClasses+"{fill:" + paletteColor(selectedScheme,numClasses,i) + "}";
 		if ( i < numClasses - 1 ) cssString += " ";
 	}
 	$("#copy-css input").val(cssString);
@@ -216,8 +260,8 @@ function applyColors()
 		return;
 	}
 	for ( var i = 0; i < numClasses; i++ ){
-		if ( !$("#borderscheck").is(":checked") ) $("#county-map g .q"+i+"-"+numClasses).css("stroke",colorbrewer[selectedScheme][numClasses][i]);
-		$(".q"+i+"-"+numClasses).css("fill",colorbrewer[selectedScheme][numClasses][i]);
+		if ( !$("#borderscheck").is(":checked") ) $("#county-map g .q"+i+"-"+numClasses).css("stroke",paletteColor(selectedScheme,numClasses,i));
+		$(".q"+i+"-"+numClasses).css("fill",paletteColor(selectedScheme,numClasses,i));
 	}
 }
 
@@ -225,7 +269,7 @@ function drawColorChips()
 {
 	var svg = "<svg width='24' height='"+CHIP_HEIGHT*numClasses+"'>";
 	for ( var i = 0; i < numClasses; i++ ){
-		svg += "<rect fill='"+colorbrewer[selectedScheme][numClasses][i]+"' width='24' height='"+CHIP_HEIGHT+"' y='"+i*CHIP_HEIGHT+"'/>";
+		svg += "<rect fill='"+paletteColor(selectedScheme,numClasses,i)+"' width='24' height='"+CHIP_HEIGHT+"' y='"+i*CHIP_HEIGHT+"'/>";
 	}
 	$("#color-chips").empty().append(svg);
 	updateValues();
@@ -256,7 +300,7 @@ function updateValues()
 	if ( !colorbrewer[selectedScheme] || !colorbrewer[selectedScheme][numClasses] ) return;
 	var system = $("#color-system").val().toLowerCase();
 	var lines = [], list = [];
-	$.each(colorbrewer[selectedScheme][numClasses], function(i, c){
+	$.each(paletteColors(selectedScheme,numClasses), function(i, c){
 		var val = ( system == "cmyk" ? getCMYK(selectedScheme,numClasses,i) : getColorDisplay(c,system) );
 		lines.push(val);
 		list.push( system == "hex" ? val : system+"("+val+")" );
@@ -284,7 +328,7 @@ function getColorDisplay(c,s)
 
 }
 function getCMYK( scheme, classes, n ){
-	var rgb = hexToRgb(getColorDisplay(colorbrewer[scheme][classes][n], "hex"));
+	var rgb = hexToRgb(getColorDisplay(paletteColor(scheme,classes,n), "hex"));
 	return rgb2cmyk(rgb.r, rgb.g, rgb.b).toString();
 }
 var highlight;
@@ -304,9 +348,9 @@ $("#counties").svg({
 			if ( highlight ) highlight.remove();
 			$("#probe").empty().append(
 				"<p>"+selectedScheme+" class " + cl +"<br/>"+
-				"RGB: " + getColorDisplay(colorbrewer[selectedScheme][numClasses][cl-1],"rgb")+"<br/>"+
+				"RGB: " + getColorDisplay(paletteColor(selectedScheme,numClasses,cl-1),"rgb")+"<br/>"+
 				"CMYK: " + getCMYK(selectedScheme,numClasses,cl-1)+"<br/>"+
-				"HEX: " + getColorDisplay(colorbrewer[selectedScheme][numClasses][cl-1],"hex")+"</p>"
+				"HEX: " + getColorDisplay(paletteColor(selectedScheme,numClasses,cl-1),"hex")+"</p>"
 			);
 			highlight = $(this).clone().css({"pointer-events":"none","stroke":"#000","stroke-width":"2"}).appendTo("#county-map g");
 			$("#probe").show();
@@ -335,6 +379,8 @@ function init()
 	var scheme = getParameterByName("scheme");
 	if ( $.inArray(scheme, schemeNames[type]) < 0 ) scheme = schemeNames[type][0];
 
+	reversed = getParameterByName("reverse") === "1";
+	$("#reverse-check").prop("checked", reversed);
 	$("#"+type).prop("checked",true);
 	selectedSchemeType = type;
 	selectedScheme = scheme;
@@ -354,7 +400,7 @@ function layerChange()
 		if ($(this).is(":checked")) $("#county-map g").children().css({"stroke":"inherit","stroke-width":"0.50"});
 		else {
 			var i=numClasses; while(i--){
-				$("#county-map g .q"+i+"-"+numClasses).css({"stroke":colorbrewer[selectedScheme][numClasses][i],"stroke-width":"1"});
+				$("#county-map g .q"+i+"-"+numClasses).css({"stroke":paletteColor(selectedScheme,numClasses,i),"stroke-width":"1"});
 			}
 		}
 	}

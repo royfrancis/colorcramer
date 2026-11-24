@@ -217,8 +217,11 @@ a img{ border: none }
 	margin:0 3px 0 0;
 }
 
-#layers, #background {
+#layers, #background, #vision {
 	margin: 5px 0 15px 5px;
+}
+#reverse {
+	margin: 5px 0 5px 5px;
 }
 #transparency-container {
 	position: relative;
@@ -364,7 +367,7 @@ a img{ border: none }
 }
 
 #export input{
-	width: 230px;
+	width: 185px;
 	margin: -5px 0 0 10px;
 }
 
@@ -417,3 +420,37 @@ a:hover{ text-decoration: underline; }
 #road-lines{ fill: none; stroke: #f33; stroke-width: 1.5px; }
 #county-map{ fill: #999; }
 #county-map g{ stroke: #000; stroke-width: .50px; }
+
+#vision select { width: 125px; }
+
+/* vision deficiency emulation: filters are defined inline in index.html */
+.cvd-protanopia #map-container, .cvd-protanopia #color-chips, .cvd-protanopia #ramps svg {
+	filter: url(#cvd-protanopia);
+	-webkit-filter: url(#cvd-protanopia);
+}
+.cvd-deuteranopia #map-container, .cvd-deuteranopia #color-chips, .cvd-deuteranopia #ramps svg {
+	filter: url(#cvd-deuteranopia);
+	-webkit-filter: url(#cvd-deuteranopia);
+}
+.cvd-tritanopia #map-container, .cvd-tritanopia #color-chips, .cvd-tritanopia #ramps svg {
+	filter: url(#cvd-tritanopia);
+	-webkit-filter: url(#cvd-tritanopia);
+}
+.cvd-achromatopsia #map-container, .cvd-achromatopsia #color-chips, .cvd-achromatopsia #ramps svg {
+	filter: url(#cvd-achromatopsia);
+	-webkit-filter: url(#cvd-achromatopsia);
+}
+
+/* share panel copy buttons */
+.copy-btn {
+	margin: 0 0 0 4px;
+	padding: 1px 6px;
+	font: 11px 'Droid Sans', sans-serif;
+	color: #444;
+	background-color: #eee;
+	border: 1px solid #999;
+	cursor: pointer;
+}
+.copy-btn:hover { background-color: #ddd; }
+#perma .copy-btn { margin-top: -5px; }
+#export .copy .copy-btn { margin-top: 5px; }

@@ -26,8 +26,13 @@ The current selection is kept in the address bar and can be shared:
 | `type`    | `sequential`, `diverging`, `cyclic`, `multi-sequential` | `sequential` |
 | `scheme`  | a palette name of the chosen type, e.g. `Batlow` | first palette of the type |
 | `n`       | number of classes, 1 to 50 | `6` |
+| `reverse` | `1` to reverse the palette order | not reversed |
 
-Invalid values fall back to the defaults. Example: `?type=diverging&scheme=Vik&n=7`.
+Invalid values fall back to the defaults. Example: `?type=diverging&scheme=Vik&n=7&reverse=1`.
+
+## Vision deficiency emulation
+
+The "Emulate vision deficiencies" dropdown shows how the map, the color chips and the palette thumbnails look with protanopia, deuteranopia, tritanopia or achromatopsia. It applies SVG color-matrix filters (Machado, Oliveira and Fernandes 2009, full severity, applied in linear RGB; achromatopsia is shown as luminance grey), so the whole map is affected, including the terrain, roads and background. The listed color values and exports are not changed. This is an approximation for design guidance, not a medical tool.
 
 ## Limitations
 
