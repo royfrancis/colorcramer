@@ -44,3 +44,11 @@ The "Emulate vision deficiencies" dropdown shows how the map, the color chips an
 Adapted from [ColorBrewer](https://colorbrewer2.org/) by Cynthia Brewer, Mark Harrower and The Pennsylvania State University (Apache-style licence, see `NOTICE.txt` and `LICENCE.txt`). This product includes color specifications and designs developed by Cynthia Brewer.
 
 Colour maps by [Fabio Crameri](https://www.fabiocrameri.ch/colourmaps/) (MIT licence). If you use them, please cite Crameri, F. (2018), Scientific colour maps, Zenodo, [doi:10.5281/zenodo.1243862](https://doi.org/10.5281/zenodo.1243862), and Crameri, F., Shephard, G.E. and Heron, P.J. (2020), The misuse of colour in science communication, Nature Communications 11, 5444. Palette data is generated with [fabio-crameri-palette-generator](https://github.com/justdan96/fabio-crameri-palette-generator).
+
+### Palette data
+
+`lib/colormaps.js` is a copy of [colormaps.js](https://cdn.jsdelivr.net/gh/justdan96/fabio-crameri-palette-generator@main/colormaps.js) from the `main` branch of fabio-crameri-palette-generator, downloaded on 2026-11-24. It holds the Scientific Colour Maps as 256 hex stops per map. The file does not record which Crameri release it was built from. Crameri's releases are listed on Zenodo at [doi.org/10.5281/zenodo.1243862](https://doi.org/10.5281/zenodo.1243862) (this DOI always points to the latest release).
+
+---
+
+2026 • Roy Francis

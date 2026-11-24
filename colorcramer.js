@@ -1,5 +1,5 @@
 var schemeNames = {
-	sequential: ["Batlow", "BatlowW", "BatlowK", "Glasgow", "Lipari", "Navia", "Hawaii", "Buda", "Imola", "Oslo", "GrayC", "Nuuk", "Devon", "Lajolla", "Bamako", "Davos", "Bilbao", "Lapaz", "Acton", "Turku", "Tokyo"],
+	sequential: ["Batlow", "BatlowW", "BatlowK", "Glasgow", "Lipari", "Navia", "NaviaW", "Hawaii", "Buda", "Imola", "Oslo", "GrayC", "Nuuk", "Devon", "Lajolla", "Bamako", "Davos", "Bilbao", "Lapaz", "Acton", "Turku", "Tokyo"],
 	diverging: ["Broc", "Cork", "Vik", "Lisbon", "Tofino", "Berlin", "Bam", "Roma", "Vanimo", "Managua"],
 	cyclic: ["RomaO", "BamO", "BrocO", "CorkO", "VikO"],
 	"multi-sequential": ["Oleron", "Bukavu", "Fes"]
