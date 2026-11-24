@@ -2,7 +2,7 @@
   "name": "colorcramer",
   "private": true,
   "type": "module",
-  "description": "Color advice for maps, using Fabio Crameri's scientific colour maps",
+  "description": "Fabio Crameri's scientific colour maps",
   "engines": {
     "node": ">=20"
   },

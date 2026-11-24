@@ -1,6 +1,6 @@
 ---
 layout: page
-title: Color advice for maps
+title: Scientific Colour Maps
 ---
 
 <ClientOnly>

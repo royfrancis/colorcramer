@@ -5,8 +5,8 @@ const root = fileURLToPath(new URL('../../', import.meta.url))
 
 // absolute URLs are needed for link previews (docs/public/og-image.jpg is served from the site root)
 const site = 'https://royfrancis.github.io/colorcramer/'
-const title = 'ColorCramer: color advice for maps'
-const description = 'Color advice for maps, using Fabio Crameri scientific colour maps'
+const title = 'ColorCramer: Scientific color maps'
+const description = 'Fabio Crameri scientific colour maps'
 const image = `${site}og-image.jpg`
 
 export default defineConfig({
