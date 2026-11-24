@@ -16,6 +16,7 @@ var colorbrewer = {};
 
 	function samplePalette(colors, classes) {
 		var sampled = [];
+		if (classes === 1) return [hexToRgbString(colors[Math.floor(colors.length / 2)])];
 		var last = colors.length - 1;
 		for (var i = 0; i < classes; i++) {
 			var idx = Math.round((i * last) / (classes - 1));
@@ -23,6 +24,13 @@ var colorbrewer = {};
 		}
 		return sampled;
 	}
+
+	// build palettes for any number of classes outside the prebuilt 3..12 on demand
+	window.ensurePalettes = function (n) {
+		for (var scheme in colorbrewer) {
+			if (!colorbrewer[scheme][n]) colorbrewer[scheme][n] = samplePalette(colormaps[scheme], n);
+		}
+	};
 
 	for (var scheme in colormaps) {
 		if (!Object.prototype.hasOwnProperty.call(colormaps, scheme)) continue;

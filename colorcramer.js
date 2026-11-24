@@ -5,12 +5,16 @@ var schemeNames = {
 	cyclic: ["RomaO", "BamO", "BrocO", "CorkO", "VikO"]
 };
 
+var CHIP_HEIGHT = 24;
 var visibleMap,
 	selectedScheme = schemeNames.sequential[0],
-	numClasses = 3;
+	numClasses = 6;
 
-$("#num-classes").change(function(){
-	setNumClasses($(this).val());
+$("#num-classes").on("input change", function(e){
+	var val = $(this).val();
+	var n = Number(val);
+	if ( val !== "" && Number.isInteger(n) && n >= 1 ) setNumClasses(n);
+	else if ( e.type === "change" ) $(this).val(numClasses);
 });
 $(".scheme-type").change(function(){
 	setSchemeType($(this).attr("id"));
@@ -83,9 +87,26 @@ $("#terrain, #solid-color").change(function(){
 });
 
 
+// the map only ships with precomputed classes for 3-12; derive others from the 12-class split
+function ensureMapClasses(n)
+{
+	if ( n >= 3 && n <= 12 ) return;
+	var done = new RegExp("q[0-9]+-"+n+"(\\s|$)");
+	$("#counties path").each(function(){
+		var cls = this.getAttribute("class") || "";
+		if ( done.test(cls) ) return false;
+		var m = cls.match(/q(\d+)-12(\s|$)/);
+		if ( !m ) return;
+		var c = Math.floor((parseInt(m[1], 10) + 0.5) * n / 12);
+		this.setAttribute("class", cls + " q" + c + "-" + n);
+	});
+}
+
 function setNumClasses(n)
 {
 	numClasses = parseInt(n, 10);
+	ensurePalettes(numClasses);
+	ensureMapClasses(numClasses);
 	showSchemes();
 }
 
@@ -95,7 +116,6 @@ function setSchemeType(type)
 	if ( type === "cyclical" ) type = "cyclic";
 	if ( !schemeNames[type] ) type = "sequential";
 	selectedSchemeType = type;
-	$( "#num-classes option" ).removeAttr( "disabled" );
 	showSchemes();
 }
 
@@ -132,6 +152,7 @@ function clearSchemes()
 	$("#ramps").css("width","100%");
 	$("#scheme-name").html("");
 	$("#color-system").hide();
+	resizeLayout();
 	$("#ramps").append("<p>No color schemes available for this selection.</p><p>Please choose fewer data classes or a different gradient type.</p>");
 }
 
@@ -185,12 +206,25 @@ function applyColors()
 
 function drawColorChips()
 {
-	var svg = "<svg width='24' height='270'>";
+	var svg = "<svg width='24' height='"+CHIP_HEIGHT*numClasses+"'>";
 	for ( var i = 0; i < numClasses; i++ ){
-		svg += "<rect fill='"+colorbrewer[selectedScheme][numClasses][i]+"' width='24' height='"+Math.min(24,parseInt(265/numClasses))+"' y='"+i*Math.min(24,parseInt(265/numClasses))+"'/>";
+		svg += "<rect fill='"+colorbrewer[selectedScheme][numClasses][i]+"' width='24' height='"+CHIP_HEIGHT+"' y='"+i*CHIP_HEIGHT+"'/>";
 	}
 	$("#color-chips").empty().append(svg);
 	updateValues();
+	resizeLayout();
+}
+
+// the color panel grows downwards with the number of classes
+function resizeLayout()
+{
+	var needed = $("#system").position().top + $("#system").outerHeight();
+	var h = Math.max(650, needed);
+	$("#left").css("height", h);
+	$("#wrapper").css("height", h + 10);
+	$("#export").css("height", h - 296);
+	$("#options").css("height", h - 293);
+	$("#map-container").css("height", 581 + h - 650);
 }
 
 function updateValues()
@@ -214,7 +248,7 @@ function updateValues()
 	jsonString += "]";
 	str = str.replace( /\n$/, "" );
 
-	$("#color-values").append("<textarea readonly style='line-height:"+Math.min(24,parseInt(265/numClasses))+"px; height:"+Math.min(24,parseInt(265/numClasses))*numClasses+"px'>"+str+"</textarea>");
+	$("#color-values").append("<textarea readonly style='line-height:"+CHIP_HEIGHT+"px; height:"+CHIP_HEIGHT*numClasses+"px'>"+str+"</textarea>");
 	$("#copy-json input").val(jsonString);
 }
 
@@ -250,7 +284,7 @@ $("#counties").svg({
 		$("#map-container").css("background-image","none");
 		init();
 		$("#counties path").mouseover(function(){
-			var cl = $(this).attr("class").match(new RegExp("q[0-9]+-"+numClasses))[0];
+			var cl = $(this).attr("class").match(new RegExp("q[0-9]+-"+numClasses+"(?![0-9])"))[0];
 			cl = parseInt(cl.substring(cl.indexOf("q")+1,cl.indexOf("-"))) + 1;
 			$("#probe").empty().append(
 				"<p>"+selectedScheme+" class " + cl +"<br/>"+
@@ -272,7 +306,8 @@ function init()
 {
 	var type = getParameterByName("type") || "sequential";
 	var scheme = getParameterByName("scheme") || schemeNames.sequential[0];
-	var n = parseInt(getParameterByName("n"), 10) || 3;
+	var n = parseInt(getParameterByName("n"), 10);
+	if ( !(n >= 1) ) n = 6;
 	$("#"+type).prop("checked",true);
 	$("#num-classes").val(n);
 	setSchemeType(type);
@@ -328,7 +363,7 @@ function loadOverlays(o)
 		}
 	});
 }
-$(".learn-more, #how, #credits, #downloads").click(function(e){
+$(".learn-more, #how, #credits").click(function(e){
 	e.stopPropagation();
 	var page;
 	switch( $(this).attr("id") ){
@@ -350,11 +385,6 @@ $(".learn-more, #how, #credits, #downloads").click(function(e){
 		case "credits":
 		$("#learnmore-title").html("CREDITS");
 		page = "credits.html";
-		break;
-
-		case "downloads":
-		$("#learnmore-title").html("DOWNLOADS");
-		page = "downloads.html";
 		break;
 
 		case "context-learn-more":
