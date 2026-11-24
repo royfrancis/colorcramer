@@ -1,6 +1,4 @@
-# ColorCramer
-
-[![Deploy](https://github.com/royfrancis/colorcramer/actions/workflows/deploy.yml/badge.svg)](https://github.com/royfrancis/colorcramer/actions/workflows/deploy.yml)
+# ColorCramer [![deploy](https://github.com/royfrancis/colorcramer/actions/workflows/deploy.yml/badge.svg)](https://github.com/royfrancis/colorcramer/actions/workflows/deploy.yml)  
 
 Fabio Crameri palettes integrated into the original ColorBrewer-style interface.
 
