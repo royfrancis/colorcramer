@@ -1,0 +1,269 @@
+/* ColorCramer app styles. Everything is scoped under .cc; box-sizing is border-box throughout. */
+
+.cc {
+  font: 13px/18px var(--vp-font-family-base, 'Helvetica Neue', Arial, sans-serif);
+  color: #666;
+  padding: 16px 0 24px;
+  overflow-x: auto;
+}
+.cc *, .cc *::before, .cc *::after { box-sizing: border-box; }
+.cc p, .cc h1, .cc h2, .cc h3 { margin: 0; }
+.cc a { color: inherit; text-decoration: none; }
+.cc a:hover { text-decoration: underline; }
+.cc button, .cc input, .cc select, .cc textarea { font: inherit; }
+
+.cc-wrapper {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  width: 1046px;
+  margin: 0 auto;
+}
+
+/* ---------- left column ---------- */
+
+.cc-left {
+  position: relative;
+  z-index: 4;
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  width: 286px;
+  background-color: #fff;
+  border-left: 1px solid #999;
+  border-bottom: 1px solid #999;
+}
+
+.cc-section { border-top: 1px solid #999; padding: 5px 0; }
+.cc-section > p, .cc-options > p, .cc-scheme-name { padding: 0 5px; font-weight: bold; }
+
+.cc-learn-more {
+  float: right;
+  width: 18px;
+  height: 18px;
+  margin: 0 5px 0 0;
+  padding: 0;
+  border: 0;
+  background: url(../assets/learnmore.png) no-repeat;
+  cursor: pointer;
+}
+.cc-learn-more:hover { background-position: 0 -18px; }
+
+.cc-number-slider { padding: 0 5px; display: flex; align-items: center; gap: 6px; }
+.cc-number-slider input { flex: 1; min-width: 0; margin: 0; }
+.cc-num-value { width: 24px; font-weight: bold; text-align: right; }
+.cc-out-of-range .cc-num-value { color: #ff7200; }
+
+.cc-type input { margin-left: 5px; }
+.cc-type label { white-space: nowrap; }
+
+.cc-scheme { min-height: 211px; }
+.cc-ramps { display: flex; flex-wrap: wrap; padding: 0 5px; }
+.cc-ramp { padding: 5px 5px 0; cursor: pointer; line-height: 0; }
+.cc-ramp:hover { background-color: #ccc; }
+.cc-ramp.selected { background-color: #999; }
+.cc-ramp svg { display: block; margin-bottom: 4px; }
+.cc-ramp rect, .cc-chips rect { stroke: #333; stroke-width: 0.5px; }
+
+/* ---------- options + colors row ---------- */
+
+.cc-colors { position: relative; display: flex; flex: 1; border-top: 1px solid #999; }
+
+.cc-options {
+  position: relative;
+  z-index: 4;
+  flex: none;
+  width: 143px;
+  padding: 3px 0 0 2px;
+  background-color: #fff;
+  border-right: 1px solid #999;
+}
+.cc-options label { font-size: 12px; }
+.cc-options input[type='checkbox'], .cc-options input[type='radio'], .cc-options label { margin: 0 3px 0 0; }
+.cc-options input[type='color'] { float: right; width: 26px; height: 20px; margin: 0 10px 0 0; padding: 0; border: 1px solid #999; background: none; }
+.cc-row { display: flex; align-items: center; min-height: 21px; }
+.cc-row input[type='color'] { margin-left: auto; }
+.cc-layers, .cc-background, .cc-vision { margin: 5px 0 15px 5px; }
+.cc-reverse { margin: 5px 0 5px 5px; }
+.cc-vision select { width: 125px; }
+
+.cc-transparency { position: relative; height: 50px; }
+.cc-transparency input { position: absolute; left: 0; top: 8px; width: 100px; margin: 0; }
+.cc-transparency p { position: absolute; left: 5px; bottom: 5px; width: 100%; font-size: 11px; font-weight: normal; padding: 0; }
+
+.cc-system {
+  position: relative;
+  z-index: 4;
+  flex: 1;
+  min-width: 0;
+  padding: 3px 0 0 5px;
+  background-color: #fff;
+}
+.cc-scheme-name { padding: 0; }
+.cc-system select { display: block; margin-bottom: 10px; }
+.cc-system-body { display: flex; }
+.cc-chips { flex: none; display: block; }
+.cc-values { margin-left: 5px; }
+.cc-values textarea {
+  display: block;
+  width: 110px;
+  margin: 0;
+  padding: 0;
+  color: #24662e;
+  border: none;
+  resize: none;
+  overflow: hidden;
+  white-space: nowrap;
+  background: transparent;
+}
+
+/* ---------- main column ---------- */
+
+.cc-main { position: relative; z-index: 1; flex: none; width: 756px; display: flex; flex-direction: column; }
+
+.cc-header {
+  height: 68px;
+  background-color: #444;
+  border-left: 1px solid #999;
+  border-right: 1px solid #999;
+}
+.cc-nav { margin: 5px 0 0 5px; }
+.cc-nav a { color: #fff; cursor: pointer; }
+.cc-header h1 { margin: 0; color: #fff; font-size: 2em; line-height: 1.2; letter-spacing: 0.2em; text-align: right; font-weight: bold; border: 0; padding: 0; }
+.cc-header h1 span { color: #ff7200; }
+.cc-header h3 { margin: 0 20px 0 0; color: #999; font-size: 1.17em; text-align: right; font-weight: bold; }
+
+.cc-map-box {
+  position: relative;
+  flex: 1;
+  min-height: 583px;
+  overflow: hidden;
+  border: 1px solid #999;
+  background-color: var(--cc-bg, #fff);
+}
+.cc-loading { position: absolute; left: 50%; top: 50%; margin: -8px 0 0 -8px; }
+.cc-map-error { padding: 20px; color: #c33; }
+.cc-terrain { position: absolute; left: -31px; top: -58px; }
+.cc-map, .cc-overlays { position: absolute; left: 0; top: 0; width: 756px; height: 581px; }
+.cc-overlays { pointer-events: none; overflow: hidden; }
+.cc-map svg, .cc-overlays svg { display: block; }
+.cc-map svg { fill: #999; }
+.cc-map svg rect { fill: var(--cc-bg, #fff); }
+.cc-terrain-on .cc-map svg rect { opacity: 0; }
+.cc-map svg g { stroke: var(--cc-border, #000); stroke-width: 0.5px; opacity: var(--cc-opacity, 1); }
+.cc-overlays #roads, .cc-overlays #cities { display: none; }
+.cc-roads-on .cc-overlays #roads { display: inline; }
+.cc-cities-on .cc-overlays #cities { display: inline; }
+.cc-overlays #road-lines { fill: none; stroke: var(--cc-road, #f33); stroke-width: 1.5px; }
+.cc-overlays #cities { fill: var(--cc-city, #000); }
+
+.cc-probe {
+  position: fixed;
+  z-index: 50;
+  pointer-events: none;
+  background-color: rgba(50, 50, 50, 0.85);
+  color: #fff;
+  padding: 5px;
+  font-size: 11px;
+  font-weight: bold;
+  line-height: 14px;
+}
+
+/* ---------- share panel (slides out from under the options/colors row) ---------- */
+
+.cc-share {
+  position: absolute;
+  z-index: 3;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 286px;
+  background-color: #fff;
+  border: 1px solid #999;
+  border-left: none;
+  border-right: none;
+  transition: transform 0.3s ease;
+}
+.cc-share.open { transform: translateX(286px); }
+.cc-share-tab {
+  position: absolute;
+  top: -1px;
+  right: -31px;
+  width: 30px;
+  height: 100px;
+  padding: 0;
+  font-size: 15px;
+  line-height: 30px;
+  color: inherit;
+  background-color: #fff;
+  border: 1px solid #999;
+  border-left: none;
+  cursor: pointer;
+}
+.cc-share-tab:hover { font-weight: bold; }
+.cc-share-tab span { display: block; transform: rotate(90deg); text-indent: 25px; }
+.cc-share h2 {
+  margin: 0 0 0 5px;
+  width: 260px;
+  position: relative;
+  top: -6px;
+  background-color: #444;
+  color: #fff;
+  text-indent: 5px;
+  font-size: 13px;
+  line-height: 18px;
+}
+.cc-share section { width: 270px; margin: 0 0 8px 10px; }
+.cc-share h3 { font-size: 13px; margin-top: 5px; }
+.cc-share section p { font-size: 12px; }
+.cc-share .cc-copy-row { display: flex; align-items: center; gap: 4px; margin-top: 4px; }
+.cc-share input { flex: 1; min-width: 0; width: 185px; }
+.cc-copy-btn {
+  padding: 1px 6px;
+  font-size: 11px;
+  color: #444;
+  background-color: #eee;
+  border: 1px solid #999;
+  cursor: pointer;
+}
+.cc-copy-btn:hover { background-color: #ddd; }
+
+/* ---------- vision deficiency emulation (filters are defined in CvdFilters.vue) ---------- */
+
+.cc-vision-protanopia .cc-map-box, .cc-vision-protanopia .cc-chips, .cc-vision-protanopia .cc-ramp svg { filter: url(#cc-cvd-protanopia); }
+.cc-vision-deuteranopia .cc-map-box, .cc-vision-deuteranopia .cc-chips, .cc-vision-deuteranopia .cc-ramp svg { filter: url(#cc-cvd-deuteranopia); }
+.cc-vision-tritanopia .cc-map-box, .cc-vision-tritanopia .cc-chips, .cc-vision-tritanopia .cc-ramp svg { filter: url(#cc-cvd-tritanopia); }
+.cc-vision-achromatopsia .cc-map-box, .cc-vision-achromatopsia .cc-chips, .cc-vision-achromatopsia .cc-ramp svg { filter: url(#cc-cvd-achromatopsia); }
+
+/* ---------- footer ---------- */
+
+.cc-footer { width: 1046px; margin: 8px auto 0; font-size: 10px; line-height: 12px; color: var(--vp-c-text-2, #666); }
+.cc-footer img { width: 12px; height: 12px; margin-right: 5px; vertical-align: middle; }
+.cc-footer a { color: var(--vp-c-brand-1, #3451b2); }
+
+/* ---------- info popup ---------- */
+
+.cc-mask { position: fixed; z-index: 100; inset: 0; background-color: rgba(0, 0, 0, 0.4); }
+.cc-modal {
+  position: fixed;
+  z-index: 101;
+  top: 50%;
+  left: 50%;
+  width: 550px;
+  max-width: calc(100vw - 20px);
+  max-height: calc(100vh - 20px);
+  overflow: auto;
+  transform: translate(-50%, -50%);
+  background-color: #fff;
+  color: #666;
+  box-shadow: 0 0 15px #333;
+  border: 1px solid #666;
+}
+.cc-modal-title { position: relative; padding: 5px 35px 5px 15px; background-color: #999; color: #fff; font-weight: bold; }
+.cc-modal-close { position: absolute; top: 5px; right: 12px; padding: 0; line-height: 1; color: #fff; background: none; border: 0; cursor: pointer; font-weight: bold; }
+.cc-modal-close:hover { color: #333; }
+.cc-modal-content { margin: 15px; font-size: 12px; line-height: 15px; }
+.cc-modal-content p { margin: 1em 0; }
+.cc-modal-content a { color: #669; }
+.cc-modal-content img { max-width: 100%; }
+.cc-modal-content h4 { margin: 0; border-bottom: 1px solid #999; font-size: 13px; }

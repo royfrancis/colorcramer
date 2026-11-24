@@ -1,21 +1,30 @@
 ColorCramer
 ==============
 
+[![Deploy](https://github.com/royfrancis/colorcramer/actions/workflows/deploy.yml/badge.svg)](https://github.com/royfrancis/colorcramer/actions/workflows/deploy.yml)
+
 Fabio Crameri palettes integrated into the original ColorBrewer-style interface.
 
 Web tool for guidance in choosing choropleth map color schemes, now using Fabio Crameri Scientific Colour Maps while preserving the familiar interface.
 
 [https://royfrancis.github.io/colorcramer/](https://royfrancis.github.io/colorcramer/)
 
-## Running locally
+## Development
 
-The map is loaded over HTTP, so `index.html` does not work when opened directly from disk (`file://`). Serve the folder instead:
+The site is built with [VitePress](https://vitepress.dev/) and Vue 3 (TypeScript). It needs Node 20 or newer.
 
 ```
-python3 -m http.server 8000
+npm install          # install (CI uses `npm ci`, which needs the committed package-lock.json)
+npm run docs:dev     # dev server with hot reload
+npm test             # unit and component tests (Vitest)
+npm run typecheck    # vue-tsc
+npm run docs:build   # production build in docs/.vitepress/dist
+npm run docs:preview # serve the production build
 ```
 
-and open <http://localhost:8000/>. Palette data and jQuery are loaded from a CDN, so an internet connection is needed.
+The site is published to GitHub Pages by `.github/workflows/deploy.yml` on every push to `master` (pull requests are built and tested but not deployed). In the repository settings, Pages must use **Build and deployment > Source: GitHub Actions**.
+
+Layout: `src/components` (the app), `src/lib` (pure functions with tests), `src/data` (palette names and the generated palette data), `src/content` (the Learn more texts), `docs` (the VitePress site and the map files in `docs/public/map`), `scripts` (palette generator), `tests`.
 
 ## URL parameters
 
@@ -43,11 +52,11 @@ The "Emulate vision deficiencies" dropdown shows how the map, the color chips an
 
 Adapted from [ColorBrewer](https://colorbrewer2.org/) by Cynthia Brewer, Mark Harrower and The Pennsylvania State University (Apache-style licence, see `NOTICE.txt` and `LICENCE.txt`). This product includes color specifications and designs developed by Cynthia Brewer.
 
-Colour maps by [Fabio Crameri](https://www.fabiocrameri.ch/colourmaps/) (MIT licence). If you use them, please cite Crameri, F. (2018), Scientific colour maps, Zenodo, [doi:10.5281/zenodo.1243862](https://doi.org/10.5281/zenodo.1243862), and Crameri, F., Shephard, G.E. and Heron, P.J. (2020), The misuse of colour in science communication, Nature Communications 11, 5444. Palette data is generated with [fabio-crameri-palette-generator](https://github.com/justdan96/fabio-crameri-palette-generator).
+Colour maps by [Fabio Crameri](https://www.fabiocrameri.ch/colourmaps/) (MIT licence). If you use them, please cite Crameri, F. (2018), Scientific colour maps, Zenodo, [doi:10.5281/zenodo.1243862](https://doi.org/10.5281/zenodo.1243862), and Crameri, F., Shephard, G.E. and Heron, P.J. (2020), The misuse of colour in science communication, Nature Communications 11, 5444.
 
 ### Palette data
 
-`lib/colormaps.js` is a copy of [colormaps.js](https://cdn.jsdelivr.net/gh/justdan96/fabio-crameri-palette-generator@main/colormaps.js) from the `main` branch of fabio-crameri-palette-generator, downloaded on 2026-11-24. It holds the Scientific Colour Maps as 256 hex stops per map. The file does not record which Crameri release it was built from. Crameri's releases are listed on Zenodo at [doi.org/10.5281/zenodo.1243862](https://doi.org/10.5281/zenodo.1243862) (this DOI always points to the latest release).
+`src/data/colormaps.ts` is generated from [Scientific colour maps v8.0.1](https://zenodo.org/records/8409685) (Zenodo, 2023-10-05) with `npm run build:colormaps`. The script downloads the release zip (about 67 MB) into `.cache/`, checks its md5, reads the 256-stop text file of every palette listed in `src/data/schemes.ts`, and writes the TypeScript module. The generated file is committed, so building or deploying the site does not download anything. To move to another release, change the constants at the top of `scripts/build-colormaps.ts` and run the script; it prints how the new data differs from the old.
 
 ---
 
