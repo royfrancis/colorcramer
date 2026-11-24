@@ -37,11 +37,12 @@ function thumb(name: string): string[] {
   <div class="cc-section cc-type">
     <button type="button" class="cc-learn-more" title="Learn more" aria-label="About gradient types" @click.stop="s.infoPage = 'schemes'" />
     <p>Gradient types:</p>
-    <template v-for="t in SCHEME_TYPES" :key="t">
-      <br v-if="t === 'multi-sequential'" />
-      <input :id="`cc-type-${t}`" type="radio" name="cc-scheme-type" :checked="s.type === t" @change="s.setType(t)" />
-      <label class="cc-check-label" :for="`cc-type-${t}`">{{ t }}</label>
-    </template>
+    <div class="cc-type-list">
+      <span v-for="t in SCHEME_TYPES" :key="t" class="cc-type-item" :class="{ 'cc-type-wide': t === 'multi-sequential' }">
+        <input :id="`cc-type-${t}`" type="radio" name="cc-scheme-type" :checked="s.type === t" @change="s.setType(t)" />
+        <label class="cc-check-label" :for="`cc-type-${t}`">{{ t }}</label>
+      </span>
+    </div>
   </div>
 
   <div class="cc-section cc-scheme">

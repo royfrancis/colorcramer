@@ -24,7 +24,6 @@ async function copy(field: Field, text: string): Promise<void> {
     <button type="button" class="cc-share-tab" :aria-expanded="s.shareOpen" @click="s.shareOpen = !s.shareOpen">
       <span>SHARE</span>
     </button>
-    <h2>Share your selected color scheme:</h2>
 
     <section class="cc-perma">
       <h3>Permalink</h3>

@@ -17,6 +17,7 @@
   display: flex;
   align-items: stretch;
   width: 1046px;
+  height: 651px; /* header (68) + map box (583): both columns end on the same line */
   margin: 0 auto;
 }
 
@@ -29,6 +30,7 @@
   display: flex;
   flex-direction: column;
   width: 286px;
+  min-height: 0;
   background-color: #fff;
   border-left: 1px solid #999;
   border-bottom: 1px solid #999;
@@ -54,11 +56,14 @@
 .cc-num-value { width: 24px; font-weight: bold; text-align: right; }
 .cc-out-of-range .cc-num-value { color: #ff7200; }
 
-.cc-type input { margin-left: 5px; }
+.cc-type-list { display: flex; flex-wrap: wrap; gap: 3px 12px; padding: 2px 5px 0; }
+.cc-type-item { display: inline-flex; align-items: center; gap: 4px; white-space: nowrap; }
+.cc-type-wide { flex-basis: 100%; }
+.cc-type input { margin: 0; }
 .cc-type label { white-space: nowrap; }
 
 .cc-scheme { min-height: 211px; }
-.cc-ramps { display: flex; flex-wrap: wrap; padding: 0 5px; }
+.cc-ramps { display: flex; flex-wrap: wrap; padding: 2px 5px 0; }
 .cc-ramp { padding: 5px 5px 0; cursor: pointer; line-height: 0; }
 .cc-ramp:hover { background-color: #ccc; }
 .cc-ramp.selected { background-color: #999; }
@@ -67,13 +72,13 @@
 
 /* ---------- options + colors row ---------- */
 
-.cc-colors { position: relative; display: flex; flex: 1; border-top: 1px solid #999; }
+.cc-colors { position: relative; display: flex; flex: 1; min-height: 0; border-top: 1px solid #999; }
 
 .cc-options {
   position: relative;
   z-index: 4;
   flex: none;
-  width: 143px;
+  width: 136px;
   padding: 3px 0 0 2px;
   background-color: #fff;
   border-right: 1px solid #999;
@@ -83,32 +88,50 @@
 .cc-options input[type='color'] { float: right; width: 26px; height: 20px; margin: 0 10px 0 0; padding: 0; border: 1px solid #999; background: none; }
 .cc-row { display: flex; align-items: center; min-height: 21px; }
 .cc-row input[type='color'] { margin-left: auto; }
-.cc-layers, .cc-background, .cc-vision { margin: 5px 0 15px 5px; }
-.cc-reverse { margin: 5px 0 5px 5px; }
-.cc-vision select { width: 125px; }
+.cc-layers, .cc-background, .cc-vision { margin: 4px 0 10px 5px; }
+.cc-reverse { margin: 0 0 5px 5px; display: flex; align-items: center; }
+.cc select {
+  appearance: none;
+  -webkit-appearance: none;
+  height: 24px;
+  padding: 0 24px 0 8px;
+  color: #444;
+  font-size: 12px;
+  background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%23666' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right 8px center;
+  border: 1px solid #b5b5b5;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.cc select:hover { border-color: #666; }
+.cc select:focus-visible { outline: none; border-color: #ff7200; box-shadow: 0 0 0 2px rgba(255, 114, 0, 0.25); }
+.cc-vision select { width: 125px; max-width: 100%; }
 
 .cc-transparency { position: relative; height: 50px; }
 .cc-transparency input { position: absolute; left: 0; top: 8px; width: 100px; margin: 0; }
-.cc-transparency p { position: absolute; left: 5px; bottom: 5px; width: 100%; font-size: 11px; font-weight: normal; padding: 0; }
+.cc-transparency p { position: absolute; left: 5px; right: 0; bottom: 5px; font-size: 11px; font-weight: normal; padding: 0; }
 
 .cc-system {
   position: relative;
   z-index: 4;
   flex: 1;
   min-width: 0;
-  padding: 3px 0 0 5px;
+  padding: 3px 3px 8px 7px;
+  overflow-y: auto;
+  scrollbar-width: thin;
   background-color: #fff;
 }
 .cc-scheme-name { padding: 0; }
-.cc-system select { display: block; margin-bottom: 10px; }
-.cc-system-body { display: flex; }
+.cc-system select { display: block; margin: 2px 0 10px; }
+.cc-system-body { display: flex; align-items: flex-start; }
 .cc-chips { flex: none; display: block; }
-.cc-values { margin-left: 5px; }
+.cc-values { flex: 1; min-width: 0; margin-left: 6px; }
 .cc-values textarea {
   display: block;
-  width: 110px;
+  width: 100%;
   margin: 0;
   padding: 0;
+  font-size: 12px;
   color: #24662e;
   border: none;
   resize: none;
@@ -122,21 +145,28 @@
 .cc-main { position: relative; z-index: 1; flex: none; width: 756px; display: flex; flex-direction: column; }
 
 .cc-header {
+  flex: none;
+  position: relative;
   height: 68px;
+  padding: 0 20px 0 0;
   background-color: #444;
   border-left: 1px solid #999;
   border-right: 1px solid #999;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
-.cc-nav { margin: 5px 0 0 5px; }
+.cc-nav { position: absolute; top: 5px; left: 10px; }
 .cc-nav a { color: #fff; cursor: pointer; }
-.cc-header h1 { margin: 0; color: #fff; font-size: 2em; line-height: 1.2; letter-spacing: 0.2em; text-align: right; font-weight: bold; border: 0; padding: 0; }
+.cc-nav a:hover { color: #ff7200; text-decoration: none; }
+.cc-header h1 { margin: 0; color: #fff; font-size: 28px; line-height: 32px; letter-spacing: 0.2em; margin-right: -0.2em; text-align: right; font-weight: bold; border: 0; padding: 0; }
 .cc-header h1 span { color: #ff7200; }
-.cc-header h3 { margin: 0 20px 0 0; color: #999; font-size: 1.17em; text-align: right; font-weight: bold; }
+.cc-header h3 { margin: 0; color: #999; font-size: 14px; line-height: 18px; text-align: right; font-weight: bold; }
 
 .cc-map-box {
   position: relative;
   flex: 1;
-  min-height: 583px;
+  min-height: 0;
   overflow: hidden;
   border: 1px solid #999;
   background-color: var(--cc-bg, #fff);
@@ -188,45 +218,48 @@
 .cc-share-tab {
   position: absolute;
   top: -1px;
-  right: -31px;
+  right: -30px;
   width: 30px;
   height: 100px;
   padding: 0;
-  font-size: 15px;
-  line-height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: bold;
+  letter-spacing: 0.1em;
   color: inherit;
   background-color: #fff;
   border: 1px solid #999;
   border-left: none;
   cursor: pointer;
 }
-.cc-share-tab:hover { font-weight: bold; }
-.cc-share-tab span { display: block; transform: rotate(90deg); text-indent: 25px; }
-.cc-share h2 {
-  margin: 0 0 0 5px;
-  width: 260px;
-  position: relative;
-  top: -6px;
-  background-color: #444;
-  color: #fff;
-  text-indent: 5px;
-  font-size: 13px;
-  line-height: 18px;
-}
-.cc-share section { width: 270px; margin: 0 0 8px 10px; }
+.cc-share-tab span { writing-mode: vertical-rl; }
+.cc-share { padding-top: 6px; }
+.cc-share section { margin: 0 8px 10px 10px; }
 .cc-share h3 { font-size: 13px; margin-top: 5px; }
 .cc-share section p { font-size: 12px; }
 .cc-share .cc-copy-row { display: flex; align-items: center; gap: 4px; margin-top: 4px; }
-.cc-share input { flex: 1; min-width: 0; width: 185px; }
+.cc-share input { flex: 1; min-width: 0; width: 100%; }
 .cc-copy-btn {
-  padding: 1px 6px;
+  flex: none;
+  min-width: 52px;
+  height: 24px;
+  padding: 0 10px;
   font-size: 11px;
+  font-weight: bold;
   color: #444;
-  background-color: #eee;
-  border: 1px solid #999;
+  background-color: #fff;
+  border: 1px solid #b5b5b5;
+  border-radius: 4px;
   cursor: pointer;
+  transition: background-color 0.15s, border-color 0.15s, box-shadow 0.15s;
 }
-.cc-copy-btn:hover { background-color: #ddd; }
+.cc-copy-btn:hover { background-color: #f3f3f3; border-color: #666; }
+.cc-copy-btn:active { background-color: #e6e6e6; }
+.cc-copy-btn:focus-visible { outline: none; border-color: #ff7200; box-shadow: 0 0 0 2px rgba(255, 114, 0, 0.25); }
+.cc-share input[type='text'] { height: 24px; padding: 0 6px; color: #444; font-size: 11px; border: 1px solid #ccc; border-radius: 4px; background: #fafafa; }
+.cc-share input[type='text']:focus-visible { outline: none; border-color: #ff7200; }
 
 /* ---------- vision deficiency emulation (filters are defined in CvdFilters.vue) ---------- */
 
@@ -237,8 +270,8 @@
 
 /* ---------- footer ---------- */
 
-.cc-footer { width: 1046px; margin: 8px auto 0; font-size: 10px; line-height: 12px; color: var(--vp-c-text-2, #666); }
-.cc-footer img { width: 12px; height: 12px; margin-right: 5px; vertical-align: middle; }
+.cc-footer { display: flex; align-items: center; gap: 6px; width: 1046px; margin: 10px auto 0; font-size: 11px; line-height: 16px; white-space: nowrap; color: var(--vp-c-text-2, #666); }
+.cc-footer img { flex: none; display: block; width: 14px; height: 14px; }
 .cc-footer a { color: var(--vp-c-brand-1, #3451b2); }
 
 /* ---------- info popup ---------- */

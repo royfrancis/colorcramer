@@ -35,19 +35,19 @@ const s = provideState()
             <a href="#" @click.prevent="s.infoPage = 'credits'">credits</a>
           </p>
           <h1>COLOR<span>CRAMER</span></h1>
-          <h3>color advice for cartography</h3>
+          <h3>scientific color maps</h3>
         </div>
         <MapView />
       </div>
     </div>
 
     <div class="cc-footer">
-      <p>
-        <img :src="githubMark" alt="" />
+      <img :src="githubMark" alt="" />
+      <span>
         <a href="https://github.com/royfrancis/colorcramer" target="_blank" rel="noopener">Source code</a>,
         <a :href="CRAMERI_RELEASE.url" target="_blank" rel="noopener">Palette data (Crameri v{{ CRAMERI_RELEASE.version }})</a>,
         <a href="https://www.fabiocrameri.ch/colourmaps/" target="_blank" rel="noopener">Fabio Crameri</a>
-      </p>
+      </span>
     </div>
 
     <InfoModal />

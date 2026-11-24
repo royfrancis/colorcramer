@@ -76,5 +76,5 @@ Built with
 ----------
 
 - VitePress (https://vitepress.dev/) and Vue (https://vuejs.org/), MIT.
-- The vision deficiency emulation uses the matrices of Machado, Oliveira and
+- The vision emulation uses the matrices of Machado, Oliveira and
   Fernandes (2009), IEEE Transactions on Visualization and Computer Graphics 15(6).

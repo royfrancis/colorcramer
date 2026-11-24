@@ -49,9 +49,9 @@ const s = useState()
       </div>
     </div>
 
-    <p>Emulate vision deficiencies:</p>
+    <p>Emulate vision:</p>
     <div class="cc-vision">
-      <select v-model="s.vision" title="Approximate simulation of how the map looks with this condition" aria-label="Emulate vision deficiency">
+      <select v-model="s.vision" title="Approximate simulation of how the map looks with this condition" aria-label="Emulate vision">
         <option v-for="o in visionOptions" :key="o.value" :value="o.value">{{ o.label }}</option>
       </select>
     </div>

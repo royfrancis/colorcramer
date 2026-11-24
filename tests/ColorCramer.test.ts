@@ -119,9 +119,9 @@ describe('ColorCramer', () => {
   it('switches the vision deficiency filter', async () => {
     const w = await mountApp()
     expect(w.classes().some((c) => c.startsWith('cc-vision-'))).toBe(false)
-    await w.find('select[aria-label="Emulate vision deficiency"]').setValue('protanopia')
+    await w.find('select[aria-label="Emulate vision"]').setValue('protanopia')
     expect(w.classes()).toContain('cc-vision-protanopia')
-    await w.find('select[aria-label="Emulate vision deficiency"]').setValue('')
+    await w.find('select[aria-label="Emulate vision"]').setValue('')
     expect(w.classes().some((c) => c.startsWith('cc-vision-'))).toBe(false)
     expect(document.querySelector('filter#cc-cvd-protanopia feColorMatrix')).not.toBeNull()
   })

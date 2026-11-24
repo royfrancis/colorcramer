@@ -9,10 +9,7 @@ export default defineConfig({
   base: '/colorcramer/',
   cleanUrls: true,
   lastUpdated: false,
-  themeConfig: {
-    siteTitle: 'ColorCramer',
-    socialLinks: [{ icon: 'github', link: 'https://github.com/royfrancis/colorcramer' }]
-  },
+  appearance: false, // light only
   vite: {
     resolve: {
       alias: { '@': fileURLToPath(new URL('../../src', import.meta.url)) }
