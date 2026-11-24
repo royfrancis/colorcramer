@@ -173,7 +173,8 @@
 }
 .cc-loading { position: absolute; left: 50%; top: 50%; margin: -8px 0 0 -8px; }
 .cc-map-error { padding: 20px; color: #c33; }
-.cc-terrain { position: absolute; left: -31px; top: -58px; }
+/* natural size (835x683) is required for the offsets to line the terrain up with the map; never let it shrink */
+.cc-terrain { position: absolute; left: -31px; top: -58px; width: 835px; height: 683px; max-width: none; }
 .cc-map, .cc-overlays { position: absolute; left: 0; top: 0; width: 756px; height: 581px; }
 .cc-overlays { pointer-events: none; overflow: hidden; }
 .cc-map svg, .cc-overlays svg { display: block; }
