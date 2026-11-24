@@ -32,20 +32,18 @@ var colorbrewer = {};
 		}
 	};
 
+	// colormaps.js is loaded from a CDN; if it is missing the app shows a "could not be loaded" message
+	if (typeof colormaps === "undefined") {
+		if (window.console) console.error("colormaps.js failed to load: no palettes available");
+		return;
+	}
+
 	for (var scheme in colormaps) {
 		if (!Object.prototype.hasOwnProperty.call(colormaps, scheme)) continue;
 		var colors = colormaps[scheme];
 		if (!colors || colors.length < 3) continue;
 
-		colorbrewer[scheme] = {
-			properties: {
-				type: "seq",
-				blind: [1],
-				print: [1],
-				copy: [1],
-				screen: [1]
-			}
-		};
+		colorbrewer[scheme] = {};
 
 		for (var n = 3; n <= 12; n++) {
 			colorbrewer[scheme][n] = samplePalette(colors, n);

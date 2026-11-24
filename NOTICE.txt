@@ -1,0 +1,78 @@
+ColorCramer
+===========
+
+ColorCramer is adapted from ColorBrewer (https://colorbrewer2.org/). The
+diagnostic map, map overlays, terrain image, interface layout and descriptive
+texts derive from the ColorBrewer web application. The ColorBrewer colour
+schemes themselves have been replaced by Fabio Crameri's Scientific Colour Maps.
+
+This product includes color specifications and designs developed by Cynthia
+Brewer (http://colorbrewer.org/).
+
+
+ColorBrewer licence
+-------------------
+
+Apache-Style Software License for ColorBrewer software and ColorBrewer Color
+Schemes
+
+Copyright (c) 2002 Cynthia Brewer, Mark Harrower, and The Pennsylvania State
+University.
+
+Licensed under the Apache License, Version 2.0 (the "License"); you may not
+use this file except in compliance with the License. You may obtain a copy of
+the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+License for the specific language governing permissions and limitations under
+the License.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+1. Redistributions as source code must retain the above copyright notice, this
+list of conditions and the following disclaimer.
+
+2. The end-user documentation included with the redistribution, if any, must
+include the following acknowledgment: "This product includes color
+specifications and designs developed by Cynthia Brewer
+(http://colorbrewer.org/)." Alternately, this acknowledgment may appear in the
+software itself, if and wherever such third-party acknowledgments normally
+appear.
+
+4. The name "ColorBrewer" must not be used to endorse or promote products
+derived from this software without prior written permission. For written
+permission, please contact Cynthia Brewer at cbrewer@psu.edu.
+
+5. Products derived from this software may not be called "ColorBrewer", nor
+may "ColorBrewer" appear in their name, without prior written permission of
+Cynthia Brewer.
+
+(The numbering above is as in the original licence text.)
+
+
+Scientific Colour Maps
+----------------------
+
+Colour maps by Fabio Crameri, MIT licence. If you use them, please cite:
+
+  Crameri, F. (2018). Scientific colour maps. Zenodo.
+  https://doi.org/10.5281/zenodo.1243862
+
+  Crameri, F., Shephard, G.E. and Heron, P.J. (2020). The misuse of colour in
+  science communication. Nature Communications, 11, 5444.
+
+The browser-ready palette data comes from
+https://github.com/justdan96/fabio-crameri-palette-generator
+
+
+Bundled libraries (lib/)
+------------------------
+
+- jQuery SVG 1.4.5, Keith Wood (http://keith-wood.name/svg.html), GPL/MIT.
+- Spectrum colorpicker, Brian Grinstead (https://bgrins.github.io/spectrum/), MIT.
+- jQuery (loaded from a CDN), MIT.

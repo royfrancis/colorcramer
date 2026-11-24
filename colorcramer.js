@@ -1,20 +1,27 @@
 var schemeNames = {
 	sequential: ["Batlow", "BatlowW", "BatlowK", "Glasgow", "Lipari", "Navia", "Hawaii", "Buda", "Imola", "Oslo", "GrayC", "Nuuk", "Devon", "Lajolla", "Bamako", "Davos", "Bilbao", "Lapaz", "Acton", "Turku", "Tokyo"],
 	diverging: ["Broc", "Cork", "Vik", "Lisbon", "Tofino", "Berlin", "Bam", "Roma", "Vanimo", "Managua"],
-	"multi-sequential": ["Oleron", "Bukavu", "Fes"],
-	cyclic: ["RomaO", "BamO", "BrocO", "CorkO", "VikO"]
+	cyclic: ["RomaO", "BamO", "BrocO", "CorkO", "VikO"],
+	"multi-sequential": ["Oleron", "Bukavu", "Fes"]
 };
 
 var CHIP_HEIGHT = 24;
-var visibleMap,
-	selectedScheme = schemeNames.sequential[0],
+var MAX_CLASSES = 50;
+// the diagnostic map only has designed outlier polygons for 3-12 classes
+var MAP_MIN_CLASSES = 3, MAP_MAX_CLASSES = 12;
+var selectedScheme = schemeNames.sequential[0],
+	selectedSchemeType = "sequential",
 	numClasses = 6;
 
-$("#num-classes").on("input change", function(e){
-	var val = $(this).val();
-	var n = Number(val);
-	if ( val !== "" && Number.isInteger(n) && n >= 1 ) setNumClasses(n);
-	else if ( e.type === "change" ) $(this).val(numClasses);
+function clampClasses(n)
+{
+	n = parseInt(n, 10);
+	if ( !(n >= 1) ) return 6;
+	return Math.min(n, MAX_CLASSES);
+}
+
+$("#num-classes").on("input change", function(){
+	setNumClasses(clampClasses($(this).val()));
 });
 $(".scheme-type").change(function(){
 	setSchemeType($(this).attr("id"));
@@ -22,20 +29,16 @@ $(".scheme-type").change(function(){
 $("#color-system").change(updateValues);
 $("#layers input").change(layerChange);
 
-$("#transparency-slider").mousedown(function(){
-	var max = $("#transparency-track").width();
-	var handle = $(this);
-	function handleMove(e){
-		var l = Math.max(3,3+Math.min(e.pageX - $("#transparency-track").offset().left,max));
-		handle.css("left",l);
-		$("#county-map g").css("opacity",1-(l-4)/max);
-	};
-	function handleUp(){
-		$(document).off( "mousemove",handleMove );
-		$(document).off( "mouseup",handleUp );
-	};
-	$(document).on( "mousemove",handleMove );
-	$(document).on( "mouseup",handleUp );
+// terrain starts at a default transparency; remember it so switching back to a solid background can undo it
+var TERRAIN_DEFAULT_TRANSPARENCY = 50, transparencyAuto = false;
+function setTransparency(v)
+{
+	$("#transparency").val(v);
+	$("#county-map g").css("opacity",1-v/100);
+}
+$("#transparency").on("input change", function(){
+	transparencyAuto = false;
+	setTransparency(Number($(this).val()));
 });
 
 $("#road-color").spectrum({
@@ -73,15 +76,15 @@ $("#terrain, #solid-color").change(function(){
 	if ( $("#terrain").is(":checked") ){
 		if ( !$("#terrain-img").length ) $("#map-container").prepend( $("<img id='terrain-img' src='map/terrain.jpg' />").css("left",-31).css("top",-58) );
 		$("#county-map rect").css("opacity",0);
-		if ( $("#transparency-slider").position().left < 4 ){
-			$("#transparency-slider").css("left",$("#transparency-track").position().left + 43);
-			$("#county-map g").css("opacity",.5);
+		if ( Number($("#transparency").val()) === 0 ){
+			setTransparency(TERRAIN_DEFAULT_TRANSPARENCY);
+			transparencyAuto = true;
 		}
 	} else {
 		$("#county-map rect").css("opacity",1);
-		if ( $("#transparency-slider").position().left == $("#transparency-track").position().left + 43 ){
-			$("#transparency-slider").css("left",3);
-			$("#county-map g").css("opacity",1);
+		if ( transparencyAuto ){
+			setTransparency(0);
+			transparencyAuto = false;
 		}
 	}
 });
@@ -102,15 +105,24 @@ function ensureMapClasses(n)
 	});
 }
 
+// fonts load after the first layout pass and can change the height of the rows above the panels
+$(window).on("load", function(){ if ( $("#county-map").length ) resizeLayout(); });
+
 function setNumClasses(n)
 {
 	numClasses = parseInt(n, 10);
+	$("#num-classes").val(numClasses);
+	$("#num-value").text(numClasses);
+	var outOfRange = numClasses < MAP_MIN_CLASSES || numClasses > MAP_MAX_CLASSES;
+	$("#number").toggleClass("out-of-range", outOfRange);
+	$("#num-classes, #num-value").attr("title", outOfRange ?
+		"The diagnostic map is designed for "+MAP_MIN_CLASSES+"-"+MAP_MAX_CLASSES+" classes. Outside that range it shows at most "+MAP_MAX_CLASSES+" distinct colors and has no outlier test." :
+		"");
 	ensurePalettes(numClasses);
 	ensureMapClasses(numClasses);
 	showSchemes();
 }
 
-var selectedSchemeType;
 function setSchemeType(type)
 {
 	if ( type === "cyclical" ) type = "cyclic";
@@ -124,24 +136,31 @@ function showSchemes()
 	$("#ramps").empty();
 	for ( var i in schemeNames[selectedSchemeType]){
 		if ( checkFilters(schemeNames[selectedSchemeType][i]) == false ) continue;
-		var ramp = $("<div class='ramp "+schemeNames[selectedSchemeType][i]+"'></div>"),
+		var name = schemeNames[selectedSchemeType][i],
+			ramp = $("<div class='ramp'></div>").attr("data-scheme", name).attr("title", name),
 			svg = "<svg width='15' height='75'>";
 		for ( var n = 0; n < 5; n++ ){
-			svg += "<rect fill='"+colorbrewer[schemeNames[selectedSchemeType][i]][5][n]+"' width='15' height='15' y='"+n*15+"'/>";
+			svg += "<rect fill='"+colorbrewer[name][5][n]+"' width='15' height='15' y='"+n*15+"'/>";
 		}
 		svg += "</svg>";
 		$("#ramps").append(ramp.append(svg).click( function(){
 			if ( $(this).hasClass("selected") ) return;
-			setScheme( $(this).attr("class").substr(5) );
+			setScheme( $(this).attr("data-scheme") );
 		}));
 	}
 	$("#scheme1").css("width","100%");
 
 	$("#color-system").show();
-	if ( $(".ramp."+selectedScheme)[0] ){
+	if ( rampFor(selectedScheme).length ){
 		setScheme( selectedScheme );
-	} else if ( $("#ramps").children().length ) setScheme( $("#ramps .ramp:first-child").attr("class").substr(5) );
+	} else if ( $("#ramps").children().length ) setScheme( $("#ramps .ramp:first-child").attr("data-scheme") );
 	else clearSchemes();
+}
+
+// the ramp element for a scheme name (names are matched as data, never built into a selector)
+function rampFor(name)
+{
+	return $("#ramps .ramp").filter(function(){ return $(this).attr("data-scheme") === name; });
 }
 
 function clearSchemes()
@@ -153,13 +172,13 @@ function clearSchemes()
 	$("#scheme-name").html("");
 	$("#color-system").hide();
 	resizeLayout();
-	$("#ramps").append("<p>No color schemes available for this selection.</p><p>Please choose fewer data classes or a different gradient type.</p>");
+	$("#ramps").append("<p>Color palettes could not be loaded.</p><p>Please check your connection and reload the page.</p>");
 }
 
 function setScheme(s)
 {
 	if ( !checkFilters(s) ){
-		if ( $("#ramps").children().length ) s = $("#ramps .ramp:first-child").attr("class").substr(5);
+		if ( $("#ramps").children().length ) s = $("#ramps .ramp:first-child").attr("data-scheme");
 		else {
 			clearSchemes();
 			return;
@@ -168,7 +187,7 @@ function setScheme(s)
 	$("#county-map g").removeClass(selectedScheme).addClass(s);
 	$(".ramp.selected").removeClass("selected");
 	selectedScheme = s;
-	$(".ramp."+selectedScheme).addClass("selected");
+	rampFor(selectedScheme).addClass("selected");
 	$("#scheme-name").html(numClasses+"-class "+selectedScheme);
 	applyColors();
 	drawColorChips();
@@ -176,8 +195,6 @@ function setScheme(s)
 	var shareUrl = baseUrl+"?type="+selectedSchemeType+"&scheme="+selectedScheme+"&n="+numClasses;
 	$("#permalink").val(shareUrl);
 	if ( window.history && window.history.replaceState ) window.history.replaceState(null, document.title, shareUrl);
-
-	updateValues();
 
 	var cssString = "";
 	for ( var i = 0; i < numClasses; i ++ ){
@@ -218,38 +235,35 @@ function drawColorChips()
 // the color panel grows downwards with the number of classes
 function resizeLayout()
 {
-	var needed = $("#system").position().top + $("#system").outerHeight();
-	var h = Math.max(650, needed);
+	// the options/colors/export panels start right below the palette picker, whatever height the rows above take
+	var top = Math.round($("#scheme").position().top + $("#scheme").outerHeight());
+	$("#options, #system, #export").css("top", top);
+	var needed = top + $("#system").outerHeight();
+	var h = Math.max(top + 355, needed);
+	var mapHeight = 581 + h - 650;
 	$("#left").css("height", h);
 	$("#wrapper").css("height", h + 10);
-	$("#export").css("height", h - 296);
-	$("#options").css("height", h - 293);
-	$("#map-container").css("height", 581 + h - 650);
+	$("#export").css("height", h - top - 1);
+	$("#options").css("height", h - top + 2);
+	$("#map-container").css("height", mapHeight);
+	// keep the map background filling the container
+	$("#county-map").attr("height", mapHeight);
+	$("#county-map rect").attr("height", mapHeight);
 }
 
 function updateValues()
 {
-	$("#color-values").empty();
-	var str = "";
-	var s = $("#color-system").val().toLowerCase();
-	var jsonString = "[";
-	$("#color-chips rect").each(function(i){
-		var val = ( s == "cmyk" ? getCMYK(selectedScheme,numClasses,i) : getColorDisplay($(this).css("fill")) );
-		str += val + "\n";
-
-		var jsonVal = getColorDisplay($(this).css("fill"));
-		if ( s == "hex" ) {
-			jsonString += "'" + jsonVal + "'";
-		} else {
-			jsonString += "'rgb(" + jsonVal + ")'";
-		}
-		if ( i < numClasses - 1 ) jsonString += ",";
+	if ( !colorbrewer[selectedScheme] || !colorbrewer[selectedScheme][numClasses] ) return;
+	var system = $("#color-system").val().toLowerCase();
+	var lines = [], list = [];
+	$.each(colorbrewer[selectedScheme][numClasses], function(i, c){
+		var val = ( system == "cmyk" ? getCMYK(selectedScheme,numClasses,i) : getColorDisplay(c,system) );
+		lines.push(val);
+		list.push( system == "hex" ? val : system+"("+val+")" );
 	});
-	jsonString += "]";
-	str = str.replace( /\n$/, "" );
 
-	$("#color-values").append("<textarea readonly style='line-height:"+CHIP_HEIGHT+"px; height:"+CHIP_HEIGHT*numClasses+"px'>"+str+"</textarea>");
-	$("#copy-json input").val(jsonString);
+	$("#color-values").empty().append("<textarea readonly style='line-height:"+CHIP_HEIGHT+"px; height:"+CHIP_HEIGHT*numClasses+"px'>"+lines.join("\n")+"</textarea>");
+	$("#copy-json input").val(JSON.stringify(list));
 }
 
 function getColorDisplay(c,s)
@@ -284,8 +298,10 @@ $("#counties").svg({
 		$("#map-container").css("background-image","none");
 		init();
 		$("#counties path").mouseover(function(){
-			var cl = $(this).attr("class").match(new RegExp("q[0-9]+-"+numClasses+"(?![0-9])"))[0];
-			cl = parseInt(cl.substring(cl.indexOf("q")+1,cl.indexOf("-"))) + 1;
+			var m = ($(this).attr("class") || "").match(new RegExp("q([0-9]+)-"+numClasses+"(?![0-9])"));
+			if ( !m || !colorbrewer[selectedScheme] || !colorbrewer[selectedScheme][numClasses] ) return;
+			var cl = parseInt(m[1], 10) + 1;
+			if ( highlight ) highlight.remove();
 			$("#probe").empty().append(
 				"<p>"+selectedScheme+" class " + cl +"<br/>"+
 				"RGB: " + getColorDisplay(colorbrewer[selectedScheme][numClasses][cl-1],"rgb")+"<br/>"+
@@ -298,46 +314,40 @@ $("#counties").svg({
 		$("#counties path").mousemove(function(e){
 			$("#probe").css({left: Math.min(920,e.pageX - $("#wrapper").offset().left + 10), top: e.pageY - $("#wrapper").offset().top - 75 });
 		});
-		$("#counties path").mouseout(function(){$("#probe").hide();highlight.remove();});
+		$("#counties path").mouseout(function(){
+			$("#probe").hide();
+			if ( highlight ){ highlight.remove(); highlight = null; }
+		});
 	}
 });
 
+function hasKey(obj, key)
+{
+	return Object.prototype.hasOwnProperty.call(obj, key);
+}
+
+// resolve type, scheme and class count from the URL (anything invalid falls back to a default), then render once
 function init()
 {
 	var type = getParameterByName("type") || "sequential";
-	var scheme = getParameterByName("scheme") || schemeNames.sequential[0];
-	var n = parseInt(getParameterByName("n"), 10);
-	if ( !(n >= 1) ) n = 6;
+	if ( type === "cyclical" ) type = "cyclic";
+	if ( !hasKey(schemeNames, type) ) type = "sequential";
+	var scheme = getParameterByName("scheme");
+	if ( $.inArray(scheme, schemeNames[type]) < 0 ) scheme = schemeNames[type][0];
+
 	$("#"+type).prop("checked",true);
-	$("#num-classes").val(n);
-	setSchemeType(type);
-	setNumClasses(n);
-	setScheme(scheme);
+	selectedSchemeType = type;
+	selectedScheme = scheme;
+	setNumClasses(clampClasses(getParameterByName("n")));
 }
 
 function layerChange()
 {
 	switch( $(this).attr("id") ){
 		case "roadscheck":
-		if ( $(this).is(":checked") ){
-			if ( !$("#overlays").children().length )
-				loadOverlays("roads");
-			else
-				$("#roads").show();
-		} else {
-			$("#roads").hide();
-		}
-		break;
-
 		case "citiescheck":
-		if ( $(this).is(":checked") ){
-			if ( !$("#overlays").children().length )
-				loadOverlays("cities");
-			else
-				$("#cities").show();
-		} else {
-			$("#cities").hide();
-		}
+		if ( overlaysState === 0 && ( $("#roadscheck").is(":checked") || $("#citiescheck").is(":checked") ) ) loadOverlays();
+		else syncOverlays();
 		break;
 
 		case "borderscheck":
@@ -350,16 +360,27 @@ function layerChange()
 	}
 }
 
-function loadOverlays(o)
+// 0 = not requested, 1 = loading, 2 = loaded; the overlay file holds both layers, so it is only fetched once
+var overlaysState = 0;
+
+function syncOverlays()
 {
+	if ( overlaysState !== 2 ) return;
+	$("#roads").toggle( $("#roadscheck").is(":checked") );
+	$("#cities").toggle( $("#citiescheck").is(":checked") );
+}
+
+function loadOverlays()
+{
+	overlaysState = 1;
 	$("#overlays").svg({
 		loadURL: "map/overlays.svg",
 		onLoad: function(){
 			$("#overlays svg").attr("width",756).attr("height",581);
-			if ( o == "cities" ) $("#roads").hide();
-			else $("#cities").hide();
 			$("#cities").css("fill",$("#city-color").spectrum("get").toHexString());
 			$("#road-lines").css("stroke",$("#road-color").spectrum("get").toHexString());
+			overlaysState = 2;
+			syncOverlays();
 		}
 	});
 }
@@ -417,10 +438,7 @@ function rgb2cmyk (r,g,b) {
 	var computedK = 0;
 
 	// BLACK
-	if (r==0 && g==0 && b==0) {
-	computedK = 1;
-	return [0,0,0,100];
-	}
+	if (r==0 && g==0 && b==0) return [0,0,0,100];
 
 	computedC = 1 - (r/255);
 	computedM = 1 - (g/255);
@@ -449,12 +467,5 @@ function hexToRgb(hex) {
 
 function getParameterByName(name)
 {
-  name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
-  var regexS = "[\\?&#]" + name + "=([^&#]*)";
-  var regex = new RegExp(regexS);
-  var results = regex.exec(window.location.href);
-  if(results == null)
-    return null;
-  else
-    return decodeURIComponent(results[1].replace(/\+/g, " "));
+	return new URLSearchParams(window.location.search).get(name);
 }

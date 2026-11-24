@@ -2,19 +2,19 @@
 <body>
 <div style="margin-bottom:12px;margin-top:-5px;">
 <p><strong>Sequential Gradients</strong></p>
-<p>Sets of colors ordered to a monotonic gradient that preserves a given order from one end to the other (often arranged by lightness values). The simplest example is a greyscale, varying from white to black. Other simple examples are gradients of a single hue, ranging from a tint (light hue) to a shade (dark hue). Multihue gradients such as Batlow tend to be stronger gradients with higher local color contrast. Sequential gradients are optimal for displaying sequential datasets (e.g., low to high values), such as temperature factors across a protein structure.</p>
+<p>Sets of colors ordered to a monotonic gradient that preserves a given order from one end to the other (often arranged by lightness values). The simplest example is a greyscale, varying from white to black. Other simple examples are gradients of a single hue, ranging from a tint (light hue) to a shade (dark hue). Multihue gradients such as Batlow tend to be stronger gradients with higher local color contrast. Sequential gradients are optimal for displaying sequential datasets (e.g., low to high values), such as elevation, temperature or population density.</p>
 </div>
 <div style="margin-bottom:12px;">
 <p><strong>Diverging Gradients</strong></p>
-<p>Formed by a set of colors that diverge from (or converge to) a central color in the middle of the gradient. Optimal for representing diverging datasets with a clearly defined central value, such as gene expression values that can be positive or negative with zero as the central value. Note: diverging gradients are often misused for sequential datasets — this should be avoided, as it introduces a misleading artificial focal point at the central value.</p>
-</div>
-<div style="margin-bottom:12px;">
-<p><strong>Multisequential Gradients</strong></p>
-<p>While diverging gradients have colors on both sides diverging from a central value (light-dark next to dark-light), multisequential gradients have both sides featuring the same gradient direction (light-dark next to light-dark). Like diverging gradients, they must only be used if there is a meaningful central value in the dataset. They are widely used in geosciences to represent earth surface topography, where one side represents bathymetry (below sea level) and the other side topography above sea level.</p>
+<p>Formed by a set of colors that diverge from (or converge to) a central color in the middle of the gradient. Optimal for representing diverging datasets with a clearly defined central value, such as temperature anomalies or population change, where values can be positive or negative with zero as the central value. Note: diverging gradients are often misused for sequential datasets — this should be avoided, as it introduces a misleading artificial focal point at the central value.</p>
 </div>
 <div style="margin-bottom:12px;">
 <p><strong>Cyclic Gradients</strong></p>
 <p>Smooth throughout, with matching ends — cyclic gradients have no real beginning or end. They are used for datasets with angles or periodic quantities, such as the horizontal direction of rivers on a map, where 0° should match 360° visually.</p>
+</div>
+<div style="margin-bottom:12px;">
+<p><strong>Multisequential Gradients</strong></p>
+<p>While diverging gradients have colors on both sides diverging from a central value (light-dark next to dark-light), multisequential gradients have both sides featuring the same gradient direction (light-dark next to light-dark). Like diverging gradients, they must only be used if there is a meaningful central value in the dataset. They are widely used in geosciences to represent earth surface topography, where one side represents bathymetry (below sea level) and the other side topography above sea level.</p>
 </div>
 </body>
 </html>

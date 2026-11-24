@@ -1,7 +1,8 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 	<head>
-		<!--[if lte IE 8]><script type="text/javascript">window.location.replace( "flash/index.php" );</script><![endif]-->
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=1046">
 		<title>ColorCramer: Color Advice for Maps</title>
 		<link href='https://fonts.googleapis.com/css?family=Droid+Sans:400,700' rel='stylesheet' type='text/css'>
 		<link rel="stylesheet" type="text/css" href="style.css" />
@@ -19,7 +20,7 @@
 				<div id="number" class="section">
 					<div class="learn-more" id="number-learn-more" title="Learn more"></div>
 					<p>Number of data classes:</p>
-					<input type="number" id="num-classes" min="1" step="1" value="6">
+					<div id="number-slider"><input type="range" id="num-classes" min="1" max="50" step="1" value="6"><span id="num-value">6</span></div>
 				</div> <!--end number div-->
 				
 				<div id="type" class="section">
@@ -27,8 +28,8 @@
 					<p>Gradient types:</p>
 					<input type="radio" class="scheme-type" name="scheme-type" id="sequential" checked/><label class="check-label" for="sequential">sequential</label>
 					<input type="radio" class="scheme-type" name="scheme-type" id="diverging"/><label class="check-label" for="diverging">diverging</label>
-					<input type="radio" class="scheme-type" name="scheme-type" id="multi-sequential"/><label class="check-label" for="multi-sequential">multi-sequential</label>
 					<input type="radio" class="scheme-type" name="scheme-type" id="cyclic"/><label class="check-label" for="cyclic">cyclic</label>
+					<br/><input type="radio" class="scheme-type" name="scheme-type" id="multi-sequential"/><label class="check-label" for="multi-sequential">multi-sequential</label>
 				</div>
 				
 				<div id="scheme" class="section">
@@ -53,16 +54,15 @@
 							<input type="radio" name="background-radio" id="solid-color" checked/><label class="check-label" for="solid-color">solid color</label><input class="color" type="text" id="bg-color"/><br/>
 							<input type="radio" name="background-radio" id="terrain"/><label class="check-label" for="terrain">terrain</label>
 							<div id="transparency-container">
-								<div id="transparency-track"></div>
-								<div id="transparency-slider"></div>
+								<input type="range" id="transparency" min="0" max="100" step="1" value="0">
 								<p>color transparency</p>
 							</div>
 						</div> <!--end background div-->
 					</div> <!--end options div-->
 					
 					<div id="system">
-						<p id="scheme-name">BuGn</p>
-						<select id="color-system">
+						<p id="scheme-name"></p>
+						<select id="color-system" title="CMYK is a simple RGB conversion, not colour-managed">
 							<option>HEX</option>
 							<option>RGB</option>
 							<option>CMYK</option>
@@ -92,17 +92,17 @@
 					<div id="perma">
 						<h3>Permalink</h3>
 						<p>Share a direct link to this color scheme.</p>
-						<input type="text" id="permalink" value="https://colorcramer.example/?type=sequential&scheme=Batlow&n=3" />
+						<input type="text" id="permalink" value="" readonly />
 					</div> <!--end perma div-->
 					<div class="copy" id="copy-json">
-						<h3>JavaScript</h3>
-						<p>Copy this scheme as a JavaScript array.</p>
-						<input type="text" value="JSON!" />
+						<h3>JSON</h3>
+							<p>Copy this scheme as a JSON array.</p>
+							<input type="text" value="" readonly />
 					</div>
 					<div class="copy" id="copy-css">
 						<h3>CSS</h3>
 						<p>Copy CSS classes for this scheme.</p>
-						<input type="text" value="CSS!" />
+						<input type="text" value="" readonly />
 					</div>
 				</div> <!--end selected-data div-->
 				
@@ -125,7 +125,7 @@
 		</div> <!--end footer-->
 		<div id="mask"></div>
 		<div id="learnmore" style="display:none">
-			<p id="learnmore-title">MUGGIN'</p>
+			<p id="learnmore-title"></p>
 			<p id="close">X</p>
 			<div id="content"></div>
 		</div>
